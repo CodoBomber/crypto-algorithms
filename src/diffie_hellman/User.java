@@ -15,7 +15,7 @@ public class User implements DHUser {
         this.system = system;
         this.username = username;
         this.privateKey = BigInteger.probablePrime(20, new Random());
-        this.publicKey = Crypto.binaryPow(system.getGValue(), privateKey, system.getPValue());
+        this.publicKey = Crypto.modPow(system.getGValue(), privateKey, system.getPValue());
         java.lang.System.out.println("public & private keys for user: " + username + " == " + publicKey + " & " + privateKey);
     }
 
@@ -31,8 +31,8 @@ public class User implements DHUser {
     public BigInteger getConnectionValue(BigInteger privateKey, BigInteger publicKey) {
 //        return publicKey.modPow(privateKey, system.getPValue());
         java.lang.System.out.println("Connection value for " + username + " == " +
-                Crypto.binaryPow(publicKey, privateKey, system.getPValue()));
-        return Crypto.binaryPow(publicKey, privateKey, system.getPValue());
+                Crypto.modPow(publicKey, privateKey, system.getPValue()));
+        return Crypto.modPow(publicKey, privateKey, system.getPValue());
     }
 
     @Override

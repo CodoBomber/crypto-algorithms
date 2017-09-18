@@ -13,7 +13,6 @@ public class Application {
         Crypto algorithms = new Crypto();
         List<BigInteger> bigIntegers;
 
-
         /* Простые числа Мерсенна *//*
         bigIntegers = Arrays.asList(
                 new BigInteger("3"),
@@ -30,8 +29,8 @@ public class Application {
                 new BigInteger("170141183460469231731687303715884105727"));
         *//* ----------------------------------------  */
 
-        /* Простые числа Фиббоначи *//*
-        bigIntegers = Arrays.asList(
+        /* Простые числа Фиббоначи */
+        /*bigIntegers = Arrays.asList(
                 new BigInteger("2"),
                 new BigInteger("3"),
                 new BigInteger("5"),
@@ -45,8 +44,8 @@ public class Application {
                 new BigInteger("2971215073"),
                 new BigInteger("99194853094755497"),
                 new BigInteger("1066340417491710595814572169"),
-                new BigInteger("19134702400093278081449423917"));
-        *//* -------------------------------------------- */
+                new BigInteger("19134702400093278081449423917"));*/
+        /* -------------------------------------------- */
 
         /* Простые числа Кэрола */
 
@@ -69,7 +68,6 @@ public class Application {
 
 
         /* Числа Кармайкла */
-//2821, 1729, 29341, 8911, 52633
         /*bigIntegers = Arrays.asList(
                 new BigInteger("561"),
                 new BigInteger("1105"),
@@ -86,21 +84,13 @@ public class Application {
                 new BigInteger("52633"),
                 new BigInteger("62745"),
                 new BigInteger("63973"),
-                new BigInteger("75361"));
-*/
+                new BigInteger("75361"));*/
         /* -------------------------------------------- */
         /*for (BigInteger bigInteger : bigIntegers) {
             java.lang.System.out.println("lib: " + bigInteger.isProbablePrime(50) + "(" + bigInteger + ")");
-            java.lang.System.out.println("impl: " + algorithms.isMillerPrime(bigInteger) + "(" + bigInteger + ")");
+            java.lang.System.out.println("impl: " + algorithms.isProbablePrime(bigInteger) + "(" + bigInteger + ")");
         }*/
 
-        long[] longs = new long[] {561, 1105, 1729, 2465, 2821, 6601, 8911, 10585, 15841, 29341, 41041, 46657, 52633, 62745, 63973, 75361};
-        for (long aLong : longs) {
-            java.lang.System.out.println("impl: " + algorithms.isPrime(aLong, 50));
-            java.lang.System.out.println("impl2: " + algorithms.isPrime(BigInteger.valueOf(aLong)));
-        }
-/*        java.lang.System.out.println("impl: " + algorithms.isPrime(75361, 50));
-        java.lang.System.out.println("impl2: " + algorithms.isPrime(BigInteger.valueOf(75361)));*/
         /*System system = new System();
         User user1 = system.registerNewUser();
         User user2 = system.registerNewUser();

@@ -14,7 +14,7 @@ public class System implements DHSystem {
         this.p = q.multiply(BigInteger.valueOf(2))
                 .add(BigInteger.ONE);
         BigInteger b = BigInteger.ONE;
-        for (; b.equals(BigInteger.ONE); b = Crypto.binaryPow(BigInteger.probablePrime(gBitLength, new Random()), q, p));
+        for (; b.equals(BigInteger.ONE); b = Crypto.modPow(BigInteger.probablePrime(gBitLength, new Random()), q, p));
         this.g = b;
         java.lang.System.out.println("Система Даффи и Хеллмана благополучно запущена со значениями: p=" +
             p + " and g=" + g);

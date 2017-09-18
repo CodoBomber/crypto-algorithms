@@ -12,7 +12,7 @@ import static java.math.BigInteger.ZERO;
 
 public class Crypto implements CryptoAlgorithms {
 
-    private static final BigInteger TWO = BigInteger.valueOf(2);
+    public static final BigInteger TWO = BigInteger.valueOf(2);
     private static final BigInteger NEGATIVE_ONE = BigInteger.valueOf(-1);
 
 //    @Override
@@ -28,131 +28,50 @@ public class Crypto implements CryptoAlgorithms {
                         )));
     }
 
-    public boolean isPrime(long n, int iteration)
-    {
-        /** base case **/
-        if (n == 0 || n == 1)
-            return false;
-        /** base case - 2 is prime **/
-        if (n == 2)
-            return true;
-        /** an even number other than 2 is composite **/
-        if (n % 2 == 0)
-            return false;
-
-        long s = n - 1;
-        while (s % 2 == 0)
-            s /= 2;
-
-        Random rand = new Random();
-        for (int i = 0; i < iteration; i++)
-        {
-            long r = Math.abs(rand.nextLong());
-            long a = r % (n - 1) + 1, temp = s;
-            long mod = BigInteger.valueOf(a).modPow(BigInteger.valueOf(temp), BigInteger.valueOf(n)).longValue();
-            while (temp != n - 1 && mod != 1 && mod != n - 1)
-            {
-                mod = mod * mod % n;
-                temp *= 2;
-            }
-            if (mod != n - 1 && temp % 2 == 0)
-                return false;
-        }
-        return true;
-    }
-
-    public boolean isPrime(BigInteger n)
-    {
-        int iteration = 25;
-        if (n.equals(ZERO) || n.equals(ONE) || n.mod(TWO).equals(ZERO)) {
-            return false;
-        }
-        if (n.equals(TWO)) {
-            return true;
-        }
-        BigInteger s = n.subtract(ONE);
-        BigInteger sub = n.subtract(ONE);
-        while (s.mod(TWO).equals(ZERO)) {
-            s = s.divide(TWO);
-        }
-
-        Random rand = new Random();
-        for (int i = 0; i < iteration; i++) {
-            BigInteger a;
-            for (a = new BigInteger(n.bitLength(), rand);
-                 a.compareTo(ONE) <= 0 || a.compareTo(sub) >= 0;
-                 a = new BigInteger(n.bitLength(), rand));
-            BigInteger temp = s;
-            BigInteger mod = a.modPow(temp, n);
-            while (!temp.equals(sub) && !mod.equals(ONE) && !mod.equals(sub))
-            {
-                mod = mod.multiply(mod).mod(n);
-                temp = temp.multiply(TWO);
-            }
-            if (!mod.equals(sub) && temp.mod(TWO).equals(ZERO)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
 
     /**
      * https://www.cs.cornell.edu/courses/cs4820/2010sp/handouts/MillerRabin.pdf
      * @param n
      * @return
      */
-    public boolean isMillerPrime(BigInteger n) {
+    public boolean isProbablePrime(BigInteger n)
+    {
+        // TODO: 17/09/18 Использовать рекомендованный логарифм от round
+        int rounds = 25;
         if (n.equals(TWO) || n.equals(BigInteger.valueOf(3))) {
             return true;
         }
-        if (n.equals(BigInteger.ZERO) || n.equals(ONE) || n.mod(TWO).equals(BigInteger.ZERO)) {
+        if (n.equals(ZERO) || n.equals(ONE) || n.mod(TWO).equals(ZERO)) {
             return false;
         }
-        // TODO: 17/09/14 Запилить рекомендуемый двоичный логарифм
-            int round = 25;
+        /*while (s.mod(TWO).equals(ZERO)) {
+            s = s.divide(TWO);
+        }*/
+        BigInteger sub = n.subtract(ONE);
+        int expo = sub.getLowestSetBit();
+        BigInteger s = sub.shiftRight(expo);
+        ThreadLocalRandom random = ThreadLocalRandom.current();
 
-            BigInteger sub = n.subtract(ONE);
-            int expo = sub.getLowestSetBit();
-            BigInteger m = sub.shiftRight(expo);
-            ThreadLocalRandom random = ThreadLocalRandom.current();
-
-            for(int i = 0; i < round; i++) {
-                // a = [2; n - 2)
-                BigInteger a;
-                for (a = new BigInteger(n.bitLength(), random);
-                     a.compareTo(ONE) <= 0 || a.compareTo(sub) >= 0;
-                     a = new BigInteger(n.bitLength(), random));
-
-                if (!a.modPow(sub, n).equals(ONE)) {
-                    return false;
-                }
-                BigInteger temp = a.modPow(m, n);
-                if (temp.equals(ONE) || temp.equals(sub)) {
-                    return true;
-                }
-                for (BigInteger j = m; j.compareTo(sub) < 0; j = j.multiply(TWO), temp = temp.modPow(TWO, n)) {
-                    if (temp.equals(sub)) {
-                        return true;
-                    }
-                    if (temp.equals(ONE)) {
-                        return false;
-                    }
-                }
-                /*for (BigInteger temp = a.modPow(m, n); !((j == 0 && temp.equals(ONE)) || temp.equals(sub));
-                    temp = temp.modPow(TWO, n)) {
-
-                    if (j > 0 && temp.equals(ONE) || BigInteger.valueOf(j++).equals(m)) {
-                        return false;
-                    }
-                }*/
+        for (int i = 0; i < rounds; i++) {
+            BigInteger a;
+            for (a = new BigInteger(n.bitLength(), random);
+                 a.compareTo(ONE) <= 0 || a.compareTo(sub) >= 0;
+                 a = new BigInteger(n.bitLength(), random));
+            BigInteger m = s, temp = modPow(a, m, n);
+            while (!m.equals(sub) && !temp.equals(ONE) && !temp.equals(sub))
+            {
+                temp = temp.multiply(temp).mod(n);
+                m = m.multiply(TWO);
             }
-
-            return true;
+            if (!temp.equals(sub) && m.mod(TWO).equals(ZERO)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 //    @Override
-    public static BigInteger binaryPow(BigInteger x, BigInteger a, BigInteger mod) {
+    public static BigInteger modPow(BigInteger x, BigInteger a, BigInteger mod) {
         BigInteger result = ONE;
         x = x.mod(mod);
         for (int i = 0; i < a.bitLength(); ++i) {
