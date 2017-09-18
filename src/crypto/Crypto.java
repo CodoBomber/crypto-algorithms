@@ -34,9 +34,8 @@ public class Crypto implements CryptoAlgorithms {
      * @param n
      * @return
      */
-    public boolean isProbablePrime(BigInteger n)
-    {
-        // TODO: 17/09/18 Использовать рекомендованный логарифм от round
+    public boolean isProbablePrime(BigInteger n) {
+        // TODO: 17/09/18 Использовать рекомендованный логарифм(2) от round
         int rounds = 25;
         if (n.equals(TWO) || n.equals(BigInteger.valueOf(3))) {
             return true;
@@ -58,8 +57,7 @@ public class Crypto implements CryptoAlgorithms {
                  a.compareTo(ONE) <= 0 || a.compareTo(sub) >= 0;
                  a = new BigInteger(n.bitLength(), random));
             BigInteger m = s, temp = modPow(a, m, n);
-            while (!m.equals(sub) && !temp.equals(ONE) && !temp.equals(sub))
-            {
+            while (!m.equals(sub) && !temp.equals(ONE) && !temp.equals(sub)) {
                 temp = temp.multiply(temp).mod(n);
                 m = m.multiply(TWO);
             }
