@@ -3,59 +3,110 @@ import diffie_hellman.System;
 import diffie_hellman.User;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Application {
 
     public static void main(String[] args) throws IllegalAccessException {
         Crypto algorithms = new Crypto();
-        // TODO: 17/09/11 Неправильно!!!
-        /*java.lang.System.out.println(Crypto.binaryPow(
-                new BigInteger("2988348162058574136915891421498819466320163312926952423791023078876139"),
-                new BigInteger("2351399303373464486466122544523690094744975233415544072992656881240319"),
-                new BigInteger("10000000000000000000000000000000000000000")));
-        java.lang.System.out.println(
-                new BigInteger("2988348162058574136915891421498819466320163312926952423791023078876139")
-                        .modPow(
-                                new BigInteger("2351399303373464486466122544523690094744975233415544072992656881240319"),
-                                new BigInteger("10000000000000000000000000000000000000000"))
-        );
+        List<BigInteger> bigIntegers;
 
-        java.lang.System.out.println(Crypto.binaryPow(BigInteger.valueOf(21), BigInteger.valueOf(7), BigInteger.valueOf(23)));
-        java.lang.System.out.println(Crypto.binaryPow(BigInteger.valueOf(17), BigInteger.valueOf(13), BigInteger.valueOf(23)));
 
-        java.lang.System.out.println(BigInteger.valueOf(21).modPow(BigInteger.valueOf(7), BigInteger.valueOf(23)));
-        java.lang.System.out.println(BigInteger.valueOf(17).modPow(BigInteger.valueOf(13), BigInteger.valueOf(23)));
+        /* Простые числа Мерсенна *//*
+        bigIntegers = Arrays.asList(
+                new BigInteger("3"),
+                new BigInteger("7"),
+                new BigInteger("31"),
+                new BigInteger("127"),
+                new BigInteger("8191"),
+                new BigInteger("131071"),
+                new BigInteger("524287"),
+                new BigInteger("2147483647"),
+                new BigInteger("2305843009213693951"),
+                new BigInteger("618970019642690137449562111"),
+                new BigInteger("162259276829213363391578010288127"),
+                new BigInteger("170141183460469231731687303715884105727"));
+        *//* ----------------------------------------  */
+
+        /* Простые числа Фиббоначи *//*
+        bigIntegers = Arrays.asList(
+                new BigInteger("2"),
+                new BigInteger("3"),
+                new BigInteger("5"),
+                new BigInteger("13"),
+                new BigInteger("89"),
+                new BigInteger("233"),
+                new BigInteger("1597"),
+                new BigInteger("28657"),
+                new BigInteger("514229"),
+                new BigInteger("433494437"),
+                new BigInteger("2971215073"),
+                new BigInteger("99194853094755497"),
+                new BigInteger("1066340417491710595814572169"),
+                new BigInteger("19134702400093278081449423917"));
+        *//* -------------------------------------------- */
+
+        /* Простые числа Кэрола */
+
+        /*bigIntegers = Arrays.asList(
+                new BigInteger("7"),
+                new BigInteger("47"),
+                new BigInteger("223"),
+                new BigInteger("3967"),
+                new BigInteger("16127"),
+                new BigInteger("1046527"),
+                new BigInteger("16769023"),
+                new BigInteger("1073676287"),
+                new BigInteger("68718952447"),
+                new BigInteger("274876858367"),
+                new BigInteger("4398042316799"),
+                new BigInteger("1125899839733759"),
+                new BigInteger("18014398241046527"),
+                new BigInteger("1298074214633706835075030044377087"));
+        *//* --------------------------------------------- */
+
+
+        /* Числа Кармайкла */
+//2821, 1729, 29341, 8911, 52633
+        /*bigIntegers = Arrays.asList(
+                new BigInteger("561"),
+                new BigInteger("1105"),
+                new BigInteger("1729"),
+                new BigInteger("2465"),
+                new BigInteger("2821"),
+                new BigInteger("6601"),
+                new BigInteger("8911"),
+                new BigInteger("10585"),
+                new BigInteger("15841"),
+                new BigInteger("29341"),
+                new BigInteger("41041"),
+                new BigInteger("46657"),
+                new BigInteger("52633"),
+                new BigInteger("62745"),
+                new BigInteger("63973"),
+                new BigInteger("75361"));
 */
-
-//        java.lang.System.out.println(algorithms.isPrime(BigInteger.valueOf(61)));
-//        java.lang.System.out.println(BigInteger.valueOf(61).isProbablePrime(50));
-//        java.lang.System.out.println(new BigInteger("618970019642690137449562111").isProbablePrime(50));
-        /*for (int i = 1; i < 500; i += 2) {
-//            java.lang.System.out.println(String.valueOf(i) + ": " + new BigInteger(String.valueOf(i)).isProbablePrime(50));
-            BigInteger bigInteger = new BigInteger(String.valueOf(i));
-            if (bigInteger.isProbablePrime(50) != algorithms.isMillerPrime(bigInteger)) {
-                java.lang.System.out.println(String.valueOf(i) + ": " + bigInteger.isProbablePrime(50));
-                java.lang.System.out.println(String.valueOf(i) + ": " + algorithms.isMillerPrime(bigInteger));
-
-            }
-//        java.lang.System.out.println(Crypto.binaryPow(BigInteger.valueOf(30), BigInteger.valueOf(2), BigInteger.valueOf(53)));
-//            java.lang.System.out.println(String.valueOf(i) + ": " + algorithms.isMillerPrime(new BigInteger(String.valueOf(i))));
+        /* -------------------------------------------- */
+        /*for (BigInteger bigInteger : bigIntegers) {
+            java.lang.System.out.println("lib: " + bigInteger.isProbablePrime(50) + "(" + bigInteger + ")");
+            java.lang.System.out.println("impl: " + algorithms.isMillerPrime(bigInteger) + "(" + bigInteger + ")");
         }*/
-        java.lang.System.out.println(new BigInteger("25").isProbablePrime(50));
-//        java.lang.System.out.println(algorithms.isMillerPrime(new BigInteger("25")));
 
-//91, 121, 133, 231, 257, 259, 341, 449
-
+        long[] longs = new long[] {561, 1105, 1729, 2465, 2821, 6601, 8911, 10585, 15841, 29341, 41041, 46657, 52633, 62745, 63973, 75361};
+        for (long aLong : longs) {
+            java.lang.System.out.println("impl: " + algorithms.isPrime(aLong, 50));
+            java.lang.System.out.println("impl2: " + algorithms.isPrime(BigInteger.valueOf(aLong)));
+        }
+/*        java.lang.System.out.println("impl: " + algorithms.isPrime(75361, 50));
+        java.lang.System.out.println("impl2: " + algorithms.isPrime(BigInteger.valueOf(75361)));*/
         /*System system = new System();
         User user1 = system.registerNewUser();
         User user2 = system.registerNewUser();
         user1.attemptConnectTo(user2.getUsername());
         */
 
-        /*System.out.println(algorithms.binaryPow(BigInteger.valueOf(4),
-                BigInteger.valueOf(2),
-                BigInteger.valueOf(10)));
-        System.out.println(algorithms.gcd(BigInteger.valueOf(28), BigInteger.valueOf(19)));
-        System.out.println(algorithms.getPrimeNumber(23));*/
+
     }
 }

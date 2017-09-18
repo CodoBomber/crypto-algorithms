@@ -28,51 +28,74 @@ public class Crypto implements CryptoAlgorithms {
                         )));
     }
 
-    public boolean isPrime(BigInteger n) {
-
-//        for (k = 0; m.mod(TWO).equals(BigInteger.ZERO); m = m.divide(TWO), k++);
-//        for (int i = 0; i < rounds; i++) {
-        // a = [2; n - 2)
-        if (n.equals(TWO) || n.equals(BigInteger.valueOf(3))) {
+    public boolean isPrime(long n, int iteration)
+    {
+        /** base case **/
+        if (n == 0 || n == 1)
+            return false;
+        /** base case - 2 is prime **/
+        if (n == 2)
             return true;
+        /** an even number other than 2 is composite **/
+        if (n % 2 == 0)
+            return false;
+
+        long s = n - 1;
+        while (s % 2 == 0)
+            s /= 2;
+
+        Random rand = new Random();
+        for (int i = 0; i < iteration; i++)
+        {
+            long r = Math.abs(rand.nextLong());
+            long a = r % (n - 1) + 1, temp = s;
+            long mod = BigInteger.valueOf(a).modPow(BigInteger.valueOf(temp), BigInteger.valueOf(n)).longValue();
+            while (temp != n - 1 && mod != 1 && mod != n - 1)
+            {
+                mod = mod * mod % n;
+                temp *= 2;
+            }
+            if (mod != n - 1 && temp % 2 == 0)
+                return false;
         }
-        if (n.equals(BigInteger.ZERO) || n.equals(ONE) || n.mod(TWO).equals(BigInteger.ZERO)) {
+        return true;
+    }
+
+    public boolean isPrime(BigInteger n)
+    {
+        int iteration = 25;
+        if (n.equals(ZERO) || n.equals(ONE) || n.mod(TWO).equals(ZERO)) {
             return false;
         }
-        // TODO: 17/09/14 Запилить рекомендуемый двоичный логарифм
-        int round = 25;
-
+        if (n.equals(TWO)) {
+            return true;
+        }
+        BigInteger s = n.subtract(ONE);
         BigInteger sub = n.subtract(ONE);
-        int expo = sub.getLowestSetBit();
-        BigInteger m = sub.shiftRight(expo);
-        ThreadLocalRandom random = ThreadLocalRandom.current();
+        while (s.mod(TWO).equals(ZERO)) {
+            s = s.divide(TWO);
+        }
 
-        for (int i = 0; i < round; i++) {
-            // a = [2; n - 2)
+        Random rand = new Random();
+        for (int i = 0; i < iteration; i++) {
             BigInteger a;
-            for (a = new BigInteger(n.bitLength(), random);
+            for (a = new BigInteger(n.bitLength(), rand);
                  a.compareTo(ONE) <= 0 || a.compareTo(sub) >= 0;
-                 a = new BigInteger(n.bitLength(), random))
-                ;
-
-            if (!a.modPow(sub, n).equals(ONE)) {
+                 a = new BigInteger(n.bitLength(), rand));
+            BigInteger temp = s;
+            BigInteger mod = a.modPow(temp, n);
+            while (!temp.equals(sub) && !mod.equals(ONE) && !mod.equals(sub))
+            {
+                mod = mod.multiply(mod).mod(n);
+                temp = temp.multiply(TWO);
+            }
+            if (!mod.equals(sub) && temp.mod(TWO).equals(ZERO)) {
                 return false;
-            }
-            BigInteger temp = a.modPow(m, n);
-            if (temp.equals(ONE) || temp.equals(sub)) {
-                return true;
-            }
-            for (int j = 0; j < expo; j++, temp = a.modPow(TWO, n)) {
-                if (temp.equals(sub)) {
-                    return true;
-                }
-                if (temp.equals(ONE)) {
-                    return false;
-                }
             }
         }
         return true;
     }
+
 
     /**
      * https://www.cs.cornell.edu/courses/cs4820/2010sp/handouts/MillerRabin.pdf
