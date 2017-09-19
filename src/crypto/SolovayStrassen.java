@@ -3,10 +3,12 @@ package crypto;
 import java.math.BigInteger;
 import java.util.Random;
 
-import static java.math.BigInteger.*;
+import static java.math.BigInteger.ONE;
+import static java.math.BigInteger.ZERO;
 
 public class SolovayStrassen {
-    /*public BigInteger Jacobi(BigInteger a, BigInteger b)
+
+    private static BigInteger Jacobi(BigInteger a, BigInteger b)
     {
         if (b.compareTo(ZERO) <= 0 || b.mod(Crypto.TWO).equals(ZERO)) {
             return ZERO;
@@ -19,51 +21,57 @@ public class SolovayStrassen {
             }
         }
         while (!a.equals(ZERO)) {
-            while (a % 2 == 0)
-            {
-                a /= 2;
-                if (b % 8 == 3 || b % 8 == 5)
-                    j = -j;
+            while (a.mod(Crypto.TWO).equals(ZERO)) {
+                a = a.divide(Crypto.TWO);
+                if (b.mod(BigInteger.valueOf(8)).equals(BigInteger.valueOf(3))
+                        || b.mod(BigInteger.valueOf(8)).equals(BigInteger.valueOf(5)))
+                    j = j.negate();
             }
 
-            long temp = a;
+            BigInteger temp = a;
             a = b;
             b = temp;
 
-            if (a % 4 == 3 && b % 4 == 3)
-                j = -j;
-            a %= b;
+            if (a.mod(BigInteger.valueOf(3)).equals(BigInteger.valueOf(3))
+                    && b.mod(BigInteger.valueOf(4)).equals(BigInteger.valueOf(3))) {
+                j = j.negate();
+            }
+            a = a.mod(b);
         }
-        if (b == 1)
+        if (b.equals(ONE)) {
             return j;
-        return 0;
-    }*/
+        }
+        return ZERO;
+    }
 
     /**
      * Считает числа Кармайкла составными
      */
-    /*public boolean isPrime(long n, int iteration)
+    public static boolean isPrime(BigInteger n, int iteration)
     {
-        *//** base case **//*
-        if (n == 0 || n == 1)
+        if (n.equals(ZERO) || n.equals(ONE)) {
             return false;
-        *//** base case - 2 is prime **//*
-        if (n == 2)
+        }
+        if (n.equals(Crypto.TWO) || n.equals(BigInteger.valueOf(3))) {
             return true;
-        *//** an even number other than 2 is composite **//*
-        if (n % 2 == 0)
+        }
+        if (n.mod(Crypto.TWO).equals(ZERO)) {
             return false;
+        }
 
-        Random rand = new Random();
+        Random random = new Random();
         for (int i = 0; i < iteration; i++)
         {
-            long r = Math.abs(rand.nextLong());
-            long a = r % (n - 1) + 1;
-            long jacobian = (n + Jacobi(a, n)) % n;
-            long mod = modPow(a, (n - 1)/2, n);
-            if(jacobian == 0 || mod != jacobian)
+            BigInteger a, sub = n.subtract(ONE);
+            for (a = new BigInteger(n.bitLength(), random);
+                 a.compareTo(ONE) <= 0 || a.compareTo(sub) >= 0;
+                 a = new BigInteger(n.bitLength(), random));
+            BigInteger jacobian = n.add(Jacobi(a, n)).mod(n);
+            BigInteger mod = Crypto.modPow(a, sub.divide(Crypto.TWO), n);
+            if(jacobian.equals(ZERO) || !mod.equals(jacobian)) {
                 return false;
+            }
         }
         return true;
-    }*/
+    }
 }

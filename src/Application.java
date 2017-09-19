@@ -1,4 +1,5 @@
 import crypto.Crypto;
+import crypto.SolovayStrassen;
 import diffie_hellman.System;
 import diffie_hellman.User;
 
@@ -30,7 +31,7 @@ public class Application {
         *//* ----------------------------------------  */
 
         /* Простые числа Фиббоначи */
-        /*bigIntegers = Arrays.asList(
+        bigIntegers = Arrays.asList(
                 new BigInteger("2"),
                 new BigInteger("3"),
                 new BigInteger("5"),
@@ -44,7 +45,7 @@ public class Application {
                 new BigInteger("2971215073"),
                 new BigInteger("99194853094755497"),
                 new BigInteger("1066340417491710595814572169"),
-                new BigInteger("19134702400093278081449423917"));*/
+                new BigInteger("19134702400093278081449423917"));
         /* -------------------------------------------- */
 
         /* Простые числа Кэрола */
@@ -90,6 +91,10 @@ public class Application {
             java.lang.System.out.println("lib: " + bigInteger.isProbablePrime(50) + "(" + bigInteger + ")");
             java.lang.System.out.println("impl: " + algorithms.isProbablePrime(bigInteger) + "(" + bigInteger + ")");
         }*/
+        for (BigInteger bigInteger : bigIntegers) {
+            java.lang.System.out.println("lib: " + bigInteger.isProbablePrime(50) + "(" + bigInteger + ")");
+            java.lang.System.out.println("impl: " + SolovayStrassen.isPrime(bigInteger, 25) + "(" + bigInteger + ")");
+        }
 
         /*System system = new System();
         User user1 = system.registerNewUser();
