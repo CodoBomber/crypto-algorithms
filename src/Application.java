@@ -31,7 +31,7 @@ public class Application {
         *//* ----------------------------------------  */
 
         /* Простые числа Фиббоначи */
-        bigIntegers = Arrays.asList(
+        /*bigIntegers = Arrays.asList(
                 new BigInteger("2"),
                 new BigInteger("3"),
                 new BigInteger("5"),
@@ -45,12 +45,12 @@ public class Application {
                 new BigInteger("2971215073"),
                 new BigInteger("99194853094755497"),
                 new BigInteger("1066340417491710595814572169"),
-                new BigInteger("19134702400093278081449423917"));
+                new BigInteger("19134702400093278081449423917"));*/
         /* -------------------------------------------- */
 
         /* Простые числа Кэрола */
 
-        /*bigIntegers = Arrays.asList(
+        bigIntegers = Arrays.asList(
                 new BigInteger("7"),
                 new BigInteger("47"),
                 new BigInteger("223"),
@@ -64,7 +64,7 @@ public class Application {
                 new BigInteger("4398042316799"),
                 new BigInteger("1125899839733759"),
                 new BigInteger("18014398241046527"),
-                new BigInteger("1298074214633706835075030044377087"));*/
+                new BigInteger("1298074214633706835075030044377087"));
         /* --------------------------------------------- */
 
 
