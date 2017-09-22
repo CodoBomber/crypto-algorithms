@@ -50,7 +50,7 @@ public class Application {
 
         /* Простые числа Кэрола */
 
-        bigIntegers = Arrays.asList(
+        /*bigIntegers = Arrays.asList(
                 new BigInteger("7"),
                 new BigInteger("47"),
                 new BigInteger("223"),
@@ -64,7 +64,7 @@ public class Application {
                 new BigInteger("4398042316799"),
                 new BigInteger("1125899839733759"),
                 new BigInteger("18014398241046527"),
-                new BigInteger("1298074214633706835075030044377087"));
+                new BigInteger("1298074214633706835075030044377087"));*/
         /* --------------------------------------------- */
 
 
@@ -91,16 +91,15 @@ public class Application {
             java.lang.System.out.println("lib: " + bigInteger.isProbablePrime(50) + "(" + bigInteger + ")");
             java.lang.System.out.println("impl: " + algorithms.isProbablePrime(bigInteger) + "(" + bigInteger + ")");
         }*/
-        for (BigInteger bigInteger : bigIntegers) {
+        /*for (BigInteger bigInteger : bigIntegers) {
             java.lang.System.out.println("lib: " + bigInteger.isProbablePrime(50) + "(" + bigInteger + ")");
             java.lang.System.out.println("impl: " + SolovayStrassen.isPrime(bigInteger, 25) + "(" + bigInteger + ")");
-        }
+        }*/
 
-        /*System system = new System();
+        System system = new System();
         User user1 = system.registerNewUser();
         User user2 = system.registerNewUser();
         user1.attemptConnectTo(user2.getUsername());
-        */
 
 
     }

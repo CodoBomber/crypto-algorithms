@@ -4,8 +4,6 @@ import java.math.BigInteger;
 
 public interface DHUser {
 
-    int xBitLength = 35;
-
     void onConnect(String sourceUsername, BigInteger connectionKey) throws IllegalAccessException;
 
     BigInteger getPublicKey();

@@ -10,11 +10,11 @@ public class System implements DHSystem {
     private final BigInteger p, g;
 
     public System() {
-        BigInteger q = BigInteger.probablePrime(pBitLength, new Random());
+        BigInteger q = Crypto.getRandomProbablePrime(pBitLength);
         this.p = q.multiply(BigInteger.valueOf(2))
                 .add(BigInteger.ONE);
         BigInteger b = BigInteger.ONE;
-        for (; b.equals(BigInteger.ONE); b = Crypto.modPow(BigInteger.probablePrime(gBitLength, new Random()), q, p));
+        for (; b.equals(BigInteger.ONE); b = Crypto.modPow(Crypto.getRandomProbablePrime(gBitLength), q, p));
         this.g = b;
         java.lang.System.out.println("Система Даффи и Хеллмана благополучно запущена со значениями: p=" +
             p + " and g=" + g);

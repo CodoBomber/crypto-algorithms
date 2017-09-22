@@ -14,7 +14,7 @@ public class User implements DHUser {
     User(System system, String username) {
         this.system = system;
         this.username = username;
-        this.privateKey = BigInteger.probablePrime(20, new Random());
+        this.privateKey = Crypto.getRandomProbablePrime(20);
         this.publicKey = Crypto.modPow(system.getGValue(), privateKey, system.getPValue());
         java.lang.System.out.println("public & private keys for user: " + username + " == " + publicKey + " & " + privateKey);
     }

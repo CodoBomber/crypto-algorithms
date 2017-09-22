@@ -34,7 +34,7 @@ public class Crypto implements CryptoAlgorithms {
      * @param n
      * @return
      */
-    public boolean isProbablePrime(BigInteger n) {
+    public static boolean isProbablePrime(BigInteger n) {
         // TODO: 17/09/18 Использовать рекомендованный логарифм(2) от round
         int rounds = 25;
         if (n.equals(TWO) || n.equals(BigInteger.valueOf(3))) {
@@ -82,18 +82,18 @@ public class Crypto implements CryptoAlgorithms {
         return result;
     }
 
-    /** Возврат простого чиста из рандомной статики
-     * Альтернативой является перебор по алгоритму Решето Эратосфена
-     * @return простое число
+    /**
+     * Метод, который возвращает возможное простое число по алгоритму Рабина Миллера или Соловья-Штрассена
+     * @param bitLength Величина числа, которое мы подаём в рандомный генератор {@link BigInteger(int, Random)}
+     * @return Возможное простое число
      */
-//    @Override
-    public BigInteger getPrimeNumber(int bitLength) {
-        /*final int[] primeNumbers = {2,17,257,1297,65537,160001,331777,614657,1336337,
-                4477457,5308417,8503057,9834497,29986577,40960001,
-                45212177,59969537,65610001,126247697,193877777,
-                303595777,384160001,406586897,562448657,655360001};*/
-        return BigInteger.probablePrime(bitLength, new Random()).multiply(BigInteger.valueOf(2)).add(ONE);
+    public static BigInteger getRandomProbablePrime(int bitLength) {
+        Random random = ThreadLocalRandom.current();
+        BigInteger prime;
+        for (prime = new BigInteger(bitLength, random);
+             !isProbablePrime(prime);
+             prime = new BigInteger(bitLength, random));
+        return prime;
     }
-
 
 }
