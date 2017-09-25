@@ -82,6 +82,17 @@ public class Crypto implements CryptoAlgorithms {
         return result;
     }
 
+    public static BigInteger power(BigInteger x, BigInteger a) {
+        BigInteger result = ONE;
+        for (int i = 0; i < a.bitLength(); ++i) {
+            if (a.testBit(i)) {
+                result = result.multiply(x);
+            }
+            x = x.multiply(x);
+        }
+        return result;
+    }
+
     /**
      * Метод, который возвращает возможное простое число по алгоритму Рабина Миллера или Соловья-Штрассена
      * @param bitLength Величина числа, которое мы подаём в рандомный генератор {@link BigInteger(int, Random)}

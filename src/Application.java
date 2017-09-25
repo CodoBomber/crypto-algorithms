@@ -1,8 +1,10 @@
+import com.sun.org.apache.bcel.internal.generic.BIPUSH;
 import crypto.Crypto;
 import crypto.SolovayStrassen;
 import diffie_hellman.System;
 import diffie_hellman.User;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -96,11 +98,18 @@ public class Application {
             java.lang.System.out.println("impl: " + SolovayStrassen.isPrime(bigInteger, 25) + "(" + bigInteger + ")");
         }*/
 
-        System system = new System();
+        /* -------------System of Diffie Hellman --------*/
+        /*System system = new System();
         User user1 = system.registerNewUser();
         User user2 = system.registerNewUser();
         user1.attemptConnectTo(user2.getUsername());
+*/      /* -----------------------------------------------*/
+        
+//        java.lang.System.out.println(BabyStepGiantStep.Newton.sqrt(16.0));
+//        java.lang.System.out.println(Crypto.modPow(BigInteger.valueOf(2), BigInteger.valueOf(6), BigInteger.valueOf(23)));
 
+        BabyStepGiantStep bgStep = new BabyStepGiantStep(Crypto.TWO, BigInteger.valueOf(23), BigInteger.valueOf(9));
+        bgStep.solve();
 
     }
 }
