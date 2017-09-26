@@ -108,8 +108,17 @@ public class Application {
 //        java.lang.System.out.println(BabyStepGiantStep.Newton.sqrt(16.0));
 //        java.lang.System.out.println(Crypto.modPow(BigInteger.valueOf(2), BigInteger.valueOf(6), BigInteger.valueOf(23)));
 
-        BabyStepGiantStep bgStep = new BabyStepGiantStep(Crypto.TWO, BigInteger.valueOf(23), BigInteger.valueOf(9));
+        BigInteger y = Crypto.modPow(BigInteger.valueOf(66), BigInteger.valueOf(59),
+                BigInteger.valueOf(701));
+        java.lang.System.out.println(y);
+
+        BabyStepGiantStep bgStep = new BabyStepGiantStep(BigInteger.valueOf(3),
+                BigInteger.valueOf(11), BigInteger.valueOf(4));
+
+        BabyStepGiantStep bgStepw = new BabyStepGiantStep(BigInteger.valueOf(66),
+                BigInteger.valueOf(701), y);
         bgStep.solve();
+        bgStepw.solve();
 
     }
 }

@@ -21,7 +21,7 @@ public class BabyStepGiantStep {
     private Integer i;
 
     public BabyStepGiantStep(BigInteger a, BigInteger p, BigInteger y) {
-        if (!SolovayStrassen.isPrime(p, 25)) {
+        if (!p.isProbablePrime(25)) {
             throw new IllegalArgumentException("P нифига не простое!!! Сам решай");
         }
         this.a = a;
@@ -47,7 +47,7 @@ public class BabyStepGiantStep {
 
     private BigInteger extractX() {
 //        for (i = 0; i < baby.size() && !baby.get(i).equals(giantValue); i++);
-        return BigInteger.valueOf(++i).multiply(m).subtract(j);
+        return j.multiply(m).subtract(BigInteger.valueOf(i));
     }
 
     /**
@@ -55,10 +55,9 @@ public class BabyStepGiantStep {
      * @return решён
      */
     private boolean findExponent() {
-        BigInteger km = k.multiply(m);
         // TODO: 26.09.17 HashMap
-        for (BigInteger j = BigInteger.ONE; !j.equals(km); j = j.add(BigInteger.ONE)) {
-            BigInteger tempGiant = Crypto.power(a, j.multiply(m)).mod(p);
+        for (BigInteger j = BigInteger.ONE; !j.equals(k.add(BigInteger.ONE)); j = j.add(BigInteger.ONE)) {
+            BigInteger tempGiant = a.modPow(j.multiply(m), p);
             giant.add(tempGiant);
             if (baby.containsKey(tempGiant)) {
                 this.i = baby.get(tempGiant);
@@ -71,8 +70,7 @@ public class BabyStepGiantStep {
     }
 
     private void calculateBabyArray() {
-        BigInteger sub = m.subtract(BigInteger.ONE);
-        for (BigInteger i = BigInteger.ZERO; i.compareTo(sub) < 0; i = i.add(BigInteger.ONE)) {
+        for (BigInteger i = BigInteger.ZERO; i.compareTo(m) < 0; i = i.add(BigInteger.ONE)) {
             baby.put(Crypto.power(a, i)
                             .multiply(y)
                             .mod(p), i.intValue()
