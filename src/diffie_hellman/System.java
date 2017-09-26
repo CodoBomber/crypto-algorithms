@@ -7,13 +7,18 @@ import java.util.Random;
 
 public class System implements DHSystem {
 
-    private final BigInteger p, g;
+    private BigInteger p, g;
 
     public System() {
-        BigInteger q = Crypto.getRandomProbablePrime(pBitLength);
-        this.p = q.multiply(BigInteger.valueOf(2))
-                .add(BigInteger.ONE);
+        BigInteger q;
+        do {
+            q = Crypto.getRandomProbablePrime(pBitLength);
+            p = q.multiply(BigInteger.valueOf(2))
+                    .add(BigInteger.ONE);
+        } while (p.isProbablePrime(25));
+
         BigInteger b = BigInteger.ONE;
+        // TODO: 26.09.17 p - prime11
         for (; b.equals(BigInteger.ONE); b = Crypto.modPow(Crypto.getRandomProbablePrime(gBitLength), q, p));
         this.g = b;
         java.lang.System.out.println("Система Даффи и Хеллмана благополучно запущена со значениями: p=" +

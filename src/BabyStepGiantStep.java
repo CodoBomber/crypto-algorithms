@@ -4,6 +4,8 @@ import crypto.SolovayStrassen;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -12,10 +14,11 @@ import java.util.concurrent.ThreadLocalRandom;
 public class BabyStepGiantStep {
 
     private final BigInteger m, k, a, y, p;
-    private ArrayList<BigInteger> baby = new ArrayList<>(),
-            giant = new ArrayList<>();
+    private ArrayList<BigInteger> giant = new ArrayList<>();
+    private TreeMap<BigInteger, Integer> baby = new TreeMap<>();
     private BigInteger j = BigInteger.ZERO;
     private BigInteger giantValue;
+    private Integer i;
 
     public BabyStepGiantStep(BigInteger a, BigInteger p, BigInteger y) {
         if (!SolovayStrassen.isPrime(p, 25)) {
@@ -24,7 +27,8 @@ public class BabyStepGiantStep {
         this.a = a;
         this.y = y;
         this.p = p;
-        k = m = Newton.sqrt(p).add(BigInteger.ONE);
+        k = m = Newton.sqrt(p)
+                .add(BigInteger.ONE);
         /*int bitLenght = p.bitLength() / 3;
         k = new BigInteger(bitLenght > 3 ? bitLenght : bitLenght + 3, ThreadLocalRandom.current());*/
     }
@@ -42,8 +46,7 @@ public class BabyStepGiantStep {
     }
 
     private BigInteger extractX() {
-        int i;
-        for (i = 0; i < baby.size() && !baby.get(i).equals(giantValue); i++);
+//        for (i = 0; i < baby.size() && !baby.get(i).equals(giantValue); i++);
         return BigInteger.valueOf(++i).multiply(m).subtract(j);
     }
 
@@ -53,10 +56,12 @@ public class BabyStepGiantStep {
      */
     private boolean findExponent() {
         BigInteger km = k.multiply(m);
-        for (BigInteger j = BigInteger.ONE; !j.equals(km); j = j.multiply(Crypto.TWO)) {
+        // TODO: 26.09.17 HashMap
+        for (BigInteger j = BigInteger.ONE; !j.equals(km); j = j.add(BigInteger.ONE)) {
             BigInteger tempGiant = Crypto.power(a, j.multiply(m)).mod(p);
             giant.add(tempGiant);
-            if (baby.contains(tempGiant)) {
+            if (baby.containsKey(tempGiant)) {
+                this.i = baby.get(tempGiant);
                 this.j = j;
                 this.giantValue = tempGiant;
                 return true;
@@ -68,10 +73,9 @@ public class BabyStepGiantStep {
     private void calculateBabyArray() {
         BigInteger sub = m.subtract(BigInteger.ONE);
         for (BigInteger i = BigInteger.ZERO; i.compareTo(sub) < 0; i = i.add(BigInteger.ONE)) {
-            baby.add(
-                    Crypto.power(a, i)
+            baby.put(Crypto.power(a, i)
                             .multiply(y)
-                            .mod(p)
+                            .mod(p), i.intValue()
             );
         }
     }
