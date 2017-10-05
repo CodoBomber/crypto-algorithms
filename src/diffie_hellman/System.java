@@ -15,7 +15,7 @@ public class System implements DHSystem {
             q = Crypto.getRandomProbablePrime(pBitLength);
             p = q.multiply(BigInteger.valueOf(2))
                     .add(BigInteger.ONE);
-        } while (p.isProbablePrime(25));
+        } while (!p.isProbablePrime(25));
 
         BigInteger b = BigInteger.ONE;
         // TODO: 26.09.17 p - prime11

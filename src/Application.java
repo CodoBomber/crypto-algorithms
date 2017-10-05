@@ -1,14 +1,10 @@
-import com.sun.org.apache.bcel.internal.generic.BIPUSH;
 import crypto.Crypto;
-import crypto.SolovayStrassen;
-import diffie_hellman.System;
-import diffie_hellman.User;
+import shamir.SUser;
+import shamir.Shamir;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class Application {
 
@@ -107,7 +103,7 @@ public class Application {
         
 //        java.lang.System.out.println(BabyStepGiantStep.Newton.sqrt(16.0));
 //        java.lang.System.out.println(Crypto.modPow(BigInteger.valueOf(2), BigInteger.valueOf(6), BigInteger.valueOf(23)));
-
+/*
         BigInteger y = Crypto.modPow(BigInteger.valueOf(66), BigInteger.valueOf(59),
                 BigInteger.valueOf(701));
         java.lang.System.out.println(y);
@@ -118,7 +114,21 @@ public class Application {
         BabyStepGiantStep bgStepw = new BabyStepGiantStep(BigInteger.valueOf(66),
                 BigInteger.valueOf(701), y);
         bgStep.solve();
-        bgStepw.solve();
+        bgStepw.solve();*/
 
+        Shamir shamir = new Shamir();
+        SUser user = new SUser(shamir);
+        SUser user2 = new SUser(shamir);
+        BigInteger message = new BigInteger(20, new Random()),
+                x1 = user.sendToUser(message),
+                x2 = user2.receiveToUser(x1),
+                x3 = user.replyToUser(x2),
+                x4 = user2.decryptMessage(x3);
+
+        System.out.println(message);
+        System.out.println(x1);
+        System.out.println(x2);
+        System.out.println(x3);
+        System.out.println(x4);
     }
 }

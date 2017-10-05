@@ -16,7 +16,7 @@ public class Crypto implements CryptoAlgorithms {
     private static final BigInteger NEGATIVE_ONE = BigInteger.valueOf(-1);
 
 //    @Override
-    public List<BigInteger> gcd(BigInteger p, BigInteger q) {
+    public static List<BigInteger> gcd(BigInteger p, BigInteger q) {
         if (q.equals(BigInteger.ZERO)) {
             return new ArrayList<>(Arrays.asList(p, ONE, BigInteger.ZERO));
         }
