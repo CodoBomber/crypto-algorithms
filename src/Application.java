@@ -1,10 +1,7 @@
 import crypto.Crypto;
-import shamir.SUser;
-import shamir.Shamir;
 
 import java.math.BigInteger;
 import java.util.List;
-import java.util.Random;
 
 public class Application {
 
@@ -98,8 +95,8 @@ public class Application {
         /*System system = new System();
         User user1 = system.registerNewUser();
         User user2 = system.registerNewUser();
-        user1.attemptConnectTo(user2.getUsername());
-*/      /* -----------------------------------------------*/
+        user1.attemptConnectTo(user2.getUsername());*/
+      /* -----------------------------------------------*/
         
 //        java.lang.System.out.println(BabyStepGiantStep.Newton.sqrt(16.0));
 //        java.lang.System.out.println(Crypto.modPow(BigInteger.valueOf(2), BigInteger.valueOf(6), BigInteger.valueOf(23)));
@@ -115,6 +112,7 @@ public class Application {
                 BigInteger.valueOf(701), y);
         bgStep.solve();
         bgStepw.solve();*/
+/*
 
         Shamir shamir = new Shamir();
         SUser user = new SUser(shamir);
@@ -130,5 +128,21 @@ public class Application {
         System.out.println(x2);
         System.out.println(x3);
         System.out.println(x4);
+*/
+/*
+    считывать файл поблочно, где p будет равно макс. колву бит p - bitLength of byte[]  p = 8 = byte
+    проблема с decrypt'om ибо мы не знаем по сколько мы байт шифровали
+    на выходе для каждого блока генерировать в файл новые <r,e> с новым к внутри
+ */
+        /*ElSystem elSystem = new ElSystem();
+        ElUser eluser1 = new ElUser(elSystem);
+        ElUser eluser2 = new ElUser(elSystem);
+        BigInteger msg = new BigInteger(20, ThreadLocalRandom.current());
+        System.out.println(msg);
+        List<BigInteger> re = eluser1.encryptMessage(msg, eluser2.getPublicKey());
+        System.out.println(re);
+        System.out.println(eluser2.decryptMessage(re));*/
+
+
     }
 }

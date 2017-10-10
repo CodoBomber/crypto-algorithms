@@ -21,9 +21,9 @@ public class SUser {
         do {
             ca = new BigInteger(subP.bitLength() - 1, random);
             gcdList = Crypto.gcd(ca, subP);
-            da = gcdList.get(2).compareTo(BigInteger.ZERO) < 0
-                    ? gcdList.get(2).add(subP) : gcdList.get(2);
         } while (!gcdList.get(0).equals(BigInteger.ONE));
+        da = gcdList.get(1).compareTo(BigInteger.ZERO) < 0
+                ? gcdList.get(1).add(subP) : gcdList.get(1);
     }
 
     public BigInteger sendToUser(BigInteger message) {

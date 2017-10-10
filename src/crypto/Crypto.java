@@ -15,7 +15,39 @@ public class Crypto implements CryptoAlgorithms {
     public static final BigInteger TWO = BigInteger.valueOf(2);
     private static final BigInteger NEGATIVE_ONE = BigInteger.valueOf(-1);
 
+    /**
+     * Метод, который возвращает возможное простое число по алгоритму Рабина Миллера или Соловья-Штрассена
+     * @param bitLength Величина числа, которое мы подаём в рандомный генератор {@link BigInteger(int, Random)}
+     * @return Возможное простое число
+     */
+    public static BigInteger getRandomProbablePrime(int bitLength) {
+        Random random = ThreadLocalRandom.current();
+        BigInteger prime;
+        for (prime = new BigInteger(bitLength, random);
+             !isProbablePrime(prime);
+             prime = new BigInteger(bitLength, random));
+        return prime;
+    }
 //    @Override
+
+    public static List<BigInteger> generatePG() {
+        BigInteger q, p, g;
+        int pBitLength = 40, gBitLength = 30;
+        do {
+            q = Crypto.getRandomProbablePrime(pBitLength);
+            p = q.multiply(BigInteger.valueOf(2))
+                    .add(BigInteger.ONE);
+        } while (!p.isProbablePrime(25));
+
+        BigInteger b = BigInteger.ONE;
+        g = new BigInteger(gBitLength, ThreadLocalRandom.current());
+        for (b = Crypto.modPow(g, q, p);
+             b.equals(BigInteger.ONE);
+             g = new BigInteger(gBitLength, ThreadLocalRandom.current()),
+             b = Crypto.modPow(g, q, p));
+        return Arrays.asList(p, g);
+    }
+
     public static List<BigInteger> gcd(BigInteger p, BigInteger q) {
         if (q.equals(BigInteger.ZERO)) {
             return new ArrayList<>(Arrays.asList(p, ONE, BigInteger.ZERO));
@@ -27,6 +59,27 @@ public class Crypto implements CryptoAlgorithms {
                                 .multiply(result.get(2))
                         )));
     }
+
+    /*public static List<BigInteger> gcd(BigInteger p, BigInteger q) {
+        if (p.compareTo(q) < 0) {
+            BigInteger t = p;
+            p = q;
+            q = t;
+        }
+        ArrayList<BigInteger> U = new ArrayList<>(Arrays.asList(p, ONE, ZERO)),
+                V = new ArrayList<>(Arrays.asList(q, ZERO, ONE)),
+                T = new ArrayList<>(Arrays.asList(ZERO, ZERO, ZERO));
+        BigInteger w;
+        while (!V.get(0).equals(ZERO)) {
+            w = U.get(0).divide(V.get(0));
+            T.set(0, U.get(0).mod(V.get(0)));
+            T.set(1, U.get(1).subtract(w.multiply(V.get(1))));
+            T.set(2, U.get(2).subtract(w.multiply(V.get(2))));
+            U = new ArrayList<>(V);
+            V = new ArrayList<>(T);
+        }
+        return U;
+    }*/
 
 
     /**
@@ -67,8 +120,8 @@ public class Crypto implements CryptoAlgorithms {
         }
         return true;
     }
-
 //    @Override
+
     public static BigInteger modPow(BigInteger x, BigInteger a, BigInteger mod) {
         BigInteger result = ONE;
         x = x.mod(mod);
@@ -91,20 +144,6 @@ public class Crypto implements CryptoAlgorithms {
             x = x.multiply(x);
         }
         return result;
-    }
-
-    /**
-     * Метод, который возвращает возможное простое число по алгоритму Рабина Миллера или Соловья-Штрассена
-     * @param bitLength Величина числа, которое мы подаём в рандомный генератор {@link BigInteger(int, Random)}
-     * @return Возможное простое число
-     */
-    public static BigInteger getRandomProbablePrime(int bitLength) {
-        Random random = ThreadLocalRandom.current();
-        BigInteger prime;
-        for (prime = new BigInteger(bitLength, random);
-             !isProbablePrime(prime);
-             prime = new BigInteger(bitLength, random));
-        return prime;
     }
 
 }

@@ -3,24 +3,16 @@ package diffie_hellman;
 import crypto.Crypto;
 
 import java.math.BigInteger;
-import java.util.Random;
+import java.util.List;
 
 public class System implements DHSystem {
 
     private BigInteger p, g;
 
     public System() {
-        BigInteger q;
-        do {
-            q = Crypto.getRandomProbablePrime(pBitLength);
-            p = q.multiply(BigInteger.valueOf(2))
-                    .add(BigInteger.ONE);
-        } while (!p.isProbablePrime(25));
-
-        BigInteger b = BigInteger.ONE;
-        // TODO: 26.09.17 p - prime11
-        for (; b.equals(BigInteger.ONE); b = Crypto.modPow(Crypto.getRandomProbablePrime(gBitLength), q, p));
-        this.g = b;
+        List<BigInteger> PG = Crypto.generatePG();
+        this.p = PG.get(0);
+        this.g = PG.get(1);
         java.lang.System.out.println("Система Даффи и Хеллмана благополучно запущена со значениями: p=" +
             p + " and g=" + g);
     }
