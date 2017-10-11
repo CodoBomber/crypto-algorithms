@@ -1,7 +1,9 @@
 import crypto.Crypto;
+import vernam.VUser;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Application {
 
@@ -142,7 +144,22 @@ public class Application {
         List<BigInteger> re = eluser1.encryptMessage(msg, eluser2.getPublicKey());
         System.out.println(re);
         System.out.println(eluser2.decryptMessage(re));*/
+/*
+        RsaUser user1 = new RsaUser();
+        RsaUser user2 = new RsaUser();
+        BigInteger msg = new BigInteger(20, ThreadLocalRandom.current());
+        System.out.println(msg);
+        BigInteger encrypted = user1.encryptMessage(msg, user2.getD(), user2.getN());
+        System.out.println(encrypted);
+        System.out.println(user2.decryptMessage(encrypted));*/
 
+        VUser user1 = new VUser();
+        VUser user2 = new VUser();
+        BigInteger msg = new BigInteger(8, ThreadLocalRandom.current());
+        System.out.println(msg);
+        List<BigInteger> msgInfo = user1.encryptMessage(msg);
+        System.out.println(msgInfo);
+        System.out.println(user2.decryptMessage(msgInfo.get(0), msgInfo.get(1)));
 
     }
 }
