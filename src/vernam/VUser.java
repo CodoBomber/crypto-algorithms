@@ -14,12 +14,13 @@ public class VUser {
     }
 
     public List<BigInteger> encryptMessage(BigInteger msg) {
-        //2 bytes to read from file
+        //2 bytes for writing K to file
         BigInteger k = new BigInteger(16, random);
         return Arrays.asList(msg.xor(k), k);
     }
 
     public BigInteger decryptMessage(BigInteger msg, BigInteger k) {
+        //2 bytes for reading K from file
         return msg.xor(k);
     }
 }

@@ -32,7 +32,7 @@ public class Crypto implements CryptoAlgorithms {
 
     public static List<BigInteger> generatePG() {
         BigInteger q, p, g;
-        int pBitLength = 40, gBitLength = 30;
+        int pBitLength = 16, gBitLength = 15;
         do {
             q = Crypto.getRandomProbablePrime(pBitLength);
             p = q.multiply(BigInteger.valueOf(2))
