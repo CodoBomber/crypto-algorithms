@@ -1,5 +1,8 @@
 import crypto.Crypto;
+import el_gamal.ElSystem;
+import el_gamal.ElUser;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -159,6 +162,15 @@ public class Application {
         System.out.println(msgInfo);
         System.out.println(user2.decryptMessage(msgInfo.get(0), msgInfo.get(1)));
 */
+
+        ElSystem elSystem = new ElSystem();
+        ElUser elUser = new ElUser(elSystem, "src/test");
+        ElUser elUser2 = new ElUser(elSystem, "LICENSE");
+        try {
+            elUser.sendMessage(elUser2);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 }
