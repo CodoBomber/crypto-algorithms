@@ -26,6 +26,8 @@ public class ElUser {
         this.publicKey = system.getG()
                 .modPow(privateKey, system.getP());
         this.system = system;
+        System.out.println("G:" + system.getG() + " P:" + system.getP());
+        System.out.println("pk:" + publicKey);
     }
 
     public void sendMessage(ElUser opponent) throws IOException {
@@ -34,11 +36,16 @@ public class ElUser {
         Files.createFile(encrypt);
         byte[] bytes = Files.readAllBytes(Paths.get(baseFile));
         BigIntegerPair re;
+        System.out.println("opponent pk: " + opponent.getPublicKey());
+        System.out.println("encode bytes: " + Arrays.toString(bytes));
+//        Serializer serializer = new Serializer(encrypt);
         for (byte b : bytes) {
             re = encryptMessage(BigInteger.valueOf(b), opponent.getPublicKey());
+//            serializer.serialize(re);
             Files.write(encrypt, re.toByteArray(), StandardOpenOption.APPEND);
         }
         opponent.receiveMessage(encrypt);
+//        serializer.finishSerialisation();
     }
 
     public void receiveMessage(Path encodedMessage) throws IOException {
@@ -49,6 +56,18 @@ public class ElUser {
         Path decript = Paths.get("src/el_gamal/decripted_file");
         Files.deleteIfExists(decript);
         Files.createFile(decript);
+/*
+        Deserializer deserializer = new Deserializer(encodedMessage);
+        ArrayList<BigIntegerPair> reList = deserializer.deserialize(bytes);
+
+        for (BigIntegerPair re : reList) {
+            Files.write(
+                    decript,
+                    decryptMessage(re).toByteArray(),
+                    StandardOpenOption.APPEND
+            );
+        }
+*/
         for (int i = 0; i + 4 != bytes.length; i += 4) {
             Files.write(
                     decript,
@@ -56,6 +75,7 @@ public class ElUser {
                     StandardOpenOption.APPEND
             );
         }
+
     }
 
     /*public byte[] encryptMessage(byte msg, BigInteger userPK) {
@@ -83,7 +103,7 @@ public class ElUser {
      * @return <r, e>, where r - g^(k)%P and p with g ~ 16bit => r = 2byte, r + e = 4byte
      */
     public BigIntegerPair encryptMessage(BigInteger msg, BigInteger userPK) {
-        BigInteger k = new BigInteger(8, random);
+        BigInteger k = new BigInteger(16, random);
         return new BigIntegerPair(
                 system.getG().modPow(k, system.getP()),
                     userPK.modPow(k, system.getP())
@@ -121,7 +141,15 @@ public class ElUser {
         }
 
         byte[] toByteArray() throws IOException {
-            return concatenateArrays(first.toByteArray(), second.toByteArray());
+            System.out.println(Arrays.toString(first.toByteArray()) + " encoded " + Arrays.toString(second.toByteArray()));
+            System.out.println(first + " encoded " + second);
+            byte[] first = this.first.toByteArray();
+            byte[] second = this.second.toByteArray();/*
+            first = first.length != 2 ? new byte[] {first[0], 0} : first;
+            second = second.length != 2 ? new byte[] {second[0], 0} : second;*/
+            return concatenateArrays(first, second);
+            /*char[] chars = new char[] { (char)this.first.intValue(), (char) this.second.intValue() };
+            return new String(chars).getBytes("UTF-8");*/
         }
 
         public BigIntegerPair(byte[] bytes) {
@@ -132,6 +160,7 @@ public class ElUser {
             byte[] second = new byte[] {bytes[2], bytes[3]};
             this.first = new BigInteger(first);
             this.second = new BigInteger(second);
+            System.out.println(Arrays.toString(first) + " decoded " + Arrays.toString(second));
         }
 
         private byte[] concatenateArrays(byte[] a, byte[] b) {
@@ -143,4 +172,51 @@ public class ElUser {
             return c;
         }
     }
+/*
+    static class Deserializer {
+
+        final ObjectInputStream inputStream;
+
+        public Deserializer(Path path) throws IOException {
+            inputStream = new ObjectInputStream(new FileInputStream(path.toFile()));
+        }
+
+        ArrayList<BigIntegerPair> deserialize(byte[] bytes) throws IOException {
+            ArrayList<BigIntegerPair> reList = new ArrayList<>();
+            try {
+                BigIntegerPair re;
+                for (re = (BigIntegerPair) inputStream.readObject();
+                     re != null; reList.add(re), re = (BigIntegerPair) inputStream.readObject());
+            } catch (ClassNotFoundException | EOFException e) {
+                return reList;
+            }
+            return reList;
+        }
+
+        void finishDeserialisation() throws IOException {
+            inputStream.close();
+        }
+
+    }
+
+    static class Serializer {
+
+        final ObjectOutputStream outputStream;
+
+        public Serializer(Path encrypt) throws IOException {
+            outputStream = new ObjectOutputStream(new FileOutputStream(encrypt.toFile()));
+        }
+
+        void serialize(BigIntegerPair bip) {
+            try {
+                outputStream.writeObject(bip);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        void finishSerialisation() throws IOException {
+            outputStream.close();
+        }
+    }*/
 }

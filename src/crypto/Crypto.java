@@ -32,18 +32,19 @@ public class Crypto implements CryptoAlgorithms {
 
     public static List<BigInteger> generatePG() {
         BigInteger q, p, g;
-        int pBitLength = 16, gBitLength = 15;
+        Random random = ThreadLocalRandom.current();
+        int pBitLength = 14, gBitLength = 13;
         do {
-            q = Crypto.getRandomProbablePrime(pBitLength);
+            q = BigInteger.probablePrime(pBitLength, random);
             p = q.multiply(BigInteger.valueOf(2))
                     .add(BigInteger.ONE);
         } while (!p.isProbablePrime(25));
 
         BigInteger b = BigInteger.ONE;
-        g = new BigInteger(gBitLength, ThreadLocalRandom.current());
+        g = new BigInteger(gBitLength, random);
         for (b = Crypto.modPow(g, q, p);
              b.equals(BigInteger.ONE);
-             g = new BigInteger(gBitLength, ThreadLocalRandom.current()),
+             g = new BigInteger(gBitLength, random),
              b = Crypto.modPow(g, q, p));
         return Arrays.asList(p, g);
     }
