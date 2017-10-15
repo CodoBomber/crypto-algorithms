@@ -69,7 +69,7 @@ public class ElUser {
             );
         }
 */
-        for (int i = 0; i + 4 != bytes.length; i += 4) {
+        for (int i = 0; i != bytes.length; i += 4) {
             Files.write(
                     decript,
                     decryptMessage(new BigIntegerPair(Arrays.copyOfRange(bytes, i, i + 4))).toByteArray(),
@@ -107,7 +107,7 @@ public class ElUser {
         BigInteger k, r, e = ZERO, limit = BigInteger.valueOf(128);
         //for 2byte guarantee
         do {
-            k = new BigInteger(10, random);
+            k = new BigInteger(10, random).add(BigInteger.valueOf(2));
             r = system.getG().modPow(k, system.getP());
             if (msg.equals(ZERO) && r.compareTo(limit) > 0) {
                 break;
@@ -123,13 +123,12 @@ public class ElUser {
     public BigInteger decryptMessage(BigIntegerPair re) {
         return re.second
                 .multiply(
-                        re.first
-                                .modPow(
-                                        system.getP()
-                                                .subtract(ONE)
-                                                .subtract(privateKey),
-                                        system.getP()
-                                )
+                        re.first.modPow(
+                                system.getP()
+                                        .subtract(ONE)
+                                        .subtract(privateKey),
+                                system.getP()
+                        )
                 )
                 .mod(system.getP());
     }

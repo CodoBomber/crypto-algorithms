@@ -1,6 +1,5 @@
 import crypto.Crypto;
-import el_gamal.ElSystem;
-import el_gamal.ElUser;
+import rsa.RsaUser;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -150,7 +149,7 @@ public class Application {
         RsaUser user2 = new RsaUser();
         BigInteger msg = new BigInteger(20, ThreadLocalRandom.current());
         System.out.println(msg);
-        BigInteger encrypted = user1.encryptMessage(msg, user2.getD(), user2.getN());
+        BigInteger encrypted = user1.encryptMessage(msg, user2.getDPublicKey(), user2.getNPublicKey());
         System.out.println(encrypted);
         System.out.println(user2.decryptMessage(encrypted));*/
 /*
@@ -163,14 +162,22 @@ public class Application {
         System.out.println(user2.decryptMessage(msgInfo.get(0), msgInfo.get(1)));
 */
 
-        ElSystem elSystem = new ElSystem();
-        ElUser elUser = new ElUser(elSystem, "src/testbig");
+/* ************************************************************************/
+
+        /*ElSystem elSystem = new ElSystem();
+        ElUser elUser = new ElUser(elSystem, "src/test");
         ElUser elUser2 = new ElUser(elSystem, "LICENSE");
         try {
-            elUser.sendMessage(elUser2);
+            elUser.sendMessageTo(elUser2);
         } catch (IOException e) {
-            e.printStackTrace();
-        }
+        }*/
 
+
+        RsaUser user1 = new RsaUser("src/test");
+        RsaUser user2 = new RsaUser("LICENSE");
+        try {
+            user1.sendMessageTo(user2);
+        } catch (IOException e) {
+        }
     }
 }
