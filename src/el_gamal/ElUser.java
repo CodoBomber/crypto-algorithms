@@ -1,11 +1,13 @@
 package el_gamal;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.Serializable;
 import java.math.BigInteger;
-import java.nio.file.*;
-import java.util.ArrayList;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -23,8 +25,7 @@ public class ElUser {
     public ElUser(ElSystem system, String baseFileName) {
         this.baseFile = baseFileName;
         this.privateKey = new BigInteger(8, random);
-        this.publicKey = system.getG()
-                .modPow(privateKey, system.getP());
+        this.publicKey = system.getG().modPow(privateKey, system.getP());
         this.system = system;
         System.out.println("G:" + system.getG() + " P:" + system.getP());
         System.out.println("pk:" + publicKey);
@@ -37,7 +38,7 @@ public class ElUser {
         byte[] bytes = Files.readAllBytes(Paths.get(baseFile));
         BigIntegerPair re;
         System.out.println("opponent pk: " + opponent.getPublicKey());
-        System.out.println("encode bytes: " + Arrays.toString(bytes));
+//        System.out.println("encode bytes: " + Arrays.toString(bytes));
 //        Serializer serializer = new Serializer(encrypt);
         for (byte b : bytes) {
             re = encryptMessage(BigInteger.valueOf(b), opponent.getPublicKey());
@@ -103,14 +104,20 @@ public class ElUser {
      * @return <r, e>, where r - g^(k)%P and p with g ~ 16bit => r = 2byte, r + e = 4byte
      */
     public BigIntegerPair encryptMessage(BigInteger msg, BigInteger userPK) {
-        BigInteger k = new BigInteger(16, random);
-        return new BigIntegerPair(
-                system.getG().modPow(k, system.getP()),
-                    userPK.modPow(k, system.getP())
-                            .multiply(msg)
-                            .mod(system.getP())
-        );
-
+        BigInteger k, r, e = ZERO, limit = BigInteger.valueOf(128);
+        //for 2byte guarantee
+        do {
+            k = new BigInteger(10, random);
+            r = system.getG().modPow(k, system.getP());
+            if (msg.equals(ZERO) && r.compareTo(limit) > 0) {
+                break;
+            }
+            e = userPK.modPow(k, system.getP())
+                    .multiply(msg)
+                    .mod(system.getP());
+            System.out.println("K:"+ k + " r:" + r + " e:"+e);
+        } while(r.compareTo(limit) < 0 || e.compareTo(limit) < 0);
+        return new BigIntegerPair(r, e);
     }
 
     public BigInteger decryptMessage(BigIntegerPair re) {
@@ -141,12 +148,15 @@ public class ElUser {
         }
 
         byte[] toByteArray() throws IOException {
-            System.out.println(Arrays.toString(first.toByteArray()) + " encoded " + Arrays.toString(second.toByteArray()));
-            System.out.println(first + " encoded " + second);
+//            System.out.println(first + " encoded " + second);
             byte[] first = this.first.toByteArray();
-            byte[] second = this.second.toByteArray();/*
-            first = first.length != 2 ? new byte[] {first[0], 0} : first;
-            second = second.length != 2 ? new byte[] {second[0], 0} : second;*/
+            byte[] second = this.second.toByteArray();
+//            System.out.println(Arrays.toString(first) + " encoded " + Arrays.toString(second));
+//            first = first.length != 2 ? new byte[] {first[0], 0} : first;
+            if (first.length != 2 || second.length != 2) {
+                System.out.println("FUCK!");
+            }
+            second = this.second.equals(ZERO) ? new byte[] {0, 0} : second;
             return concatenateArrays(first, second);
             /*char[] chars = new char[] { (char)this.first.intValue(), (char) this.second.intValue() };
             return new String(chars).getBytes("UTF-8");*/
@@ -160,7 +170,7 @@ public class ElUser {
             byte[] second = new byte[] {bytes[2], bytes[3]};
             this.first = new BigInteger(first);
             this.second = new BigInteger(second);
-            System.out.println(Arrays.toString(first) + " decoded " + Arrays.toString(second));
+//            System.out.println(Arrays.toString(first) + " decoded " + Arrays.toString(second));
         }
 
         private byte[] concatenateArrays(byte[] a, byte[] b) {

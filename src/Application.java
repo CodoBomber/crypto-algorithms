@@ -164,7 +164,7 @@ public class Application {
 */
 
         ElSystem elSystem = new ElSystem();
-        ElUser elUser = new ElUser(elSystem, "src/test");
+        ElUser elUser = new ElUser(elSystem, "src/testbig");
         ElUser elUser2 = new ElUser(elSystem, "LICENSE");
         try {
             elUser.sendMessage(elUser2);
