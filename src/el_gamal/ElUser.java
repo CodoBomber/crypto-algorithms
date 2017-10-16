@@ -1,8 +1,13 @@
 package el_gamal;
 
+import crypto.FileEncryptor;
+
 import java.io.IOException;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.nio.BufferUnderflowException;
+import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -31,6 +36,33 @@ public class ElUser {
         System.out.println("pk:" + publicKey);
     }
 
+    //あまりに大きいファイルの場合、メモリオーバーフローでクラッシュしちょうから注意を払え!
+    public void sendMessageTo(ElUser opponent) throws IOException {
+        ByteBuffer byteBuffer = FileEncryptor.bufferizeFile(baseFile);
+        byteBuffer.position(0);
+        ByteBuffer encodedBuffer = ByteBuffer.allocate(byteBuffer.limit() * Character.BYTES * 2);
+        byte currentByte;
+        BigIntegerPair re;
+        char[] reBytes;
+        do {
+            try {
+                currentByte = byteBuffer.get();
+                System.out.println(BigInteger.valueOf(currentByte < 0 ? currentByte + 256 : currentByte));
+                re = encryptMessage(BigInteger.valueOf(currentByte < 0 ? currentByte + 256 : currentByte), opponent.getPublicKey());
+                reBytes = re.toCharArray();
+                encodedBuffer.putChar(reBytes[0]);
+                encodedBuffer.putChar(reBytes[1]);
+            } catch (BufferUnderflowException e) {
+                break;
+            }
+        } while (true);
+        Path encrypt = Paths.get("src/el_gamal_encrypted");
+        Files.deleteIfExists(encrypt);
+        Files.createFile(encrypt);
+        Files.write(encrypt, encodedBuffer.array(), StandardOpenOption.WRITE);
+        opponent.receiveMessage(encrypt);
+    }
+
     public void sendMessage(ElUser opponent) throws IOException {
         Path encrypt = Paths.get("El_gamal_encrypt");
         Files.deleteIfExists(encrypt);
@@ -50,6 +82,36 @@ public class ElUser {
     }
 
     public void receiveMessage(Path encodedMessage) throws IOException {
+        ByteBuffer encodedBuffer = FileEncryptor.bufferizeFile("src/el_gamal_encrypted");
+        encodedBuffer.position(0);
+        Path decript = Paths.get("src/el_gamal/decripted_file");
+        Files.deleteIfExists(decript);
+        Files.createFile(decript);
+        do {
+            try {
+                Files.write(
+                        decript,
+                        decryptMessage(
+                                new BigIntegerPair(
+                                        encodedBuffer.getChar(),
+                                        encodedBuffer.getChar()
+                                )).toByteArray(),
+                        StandardOpenOption.APPEND
+                );
+                /*System.out.println(opponent.decryptMessage(
+                        new BigIntegerPair(
+                                encodedBuffer.getChar(),
+                                encodedBuffer.getChar()
+                        )));*/
+//                System.out.print("r= " + (int)encodedBuffer.getChar() + " ");
+//                System.out.println("e= " + (int)encodedBuffer.getChar());
+            } catch (BufferUnderflowException e) {
+                break;
+            }
+        } while (true);
+    }
+
+    public void receiveMessage2(Path encodedMessage) throws IOException {
         byte[] bytes = Files.readAllBytes(encodedMessage);
         if (bytes.length % 4 != 0) {
             throw new ArrayIndexOutOfBoundsException("В файле нехватает байтов, чтобы произвести десериализацию");
@@ -106,17 +168,17 @@ public class ElUser {
     public BigIntegerPair encryptMessage(BigInteger msg, BigInteger userPK) {
         BigInteger k, r, e = ZERO, limit = BigInteger.valueOf(128);
         //for 2byte guarantee
-        do {
+//        do {
             k = new BigInteger(10, random).add(BigInteger.valueOf(2));
             r = system.getG().modPow(k, system.getP());
-            if (msg.equals(ZERO) && r.compareTo(limit) > 0) {
+            /*if (msg.equals(ZERO) && r.compareTo(limit) > 0) {
                 break;
-            }
+            }*/
             e = userPK.modPow(k, system.getP())
                     .multiply(msg)
                     .mod(system.getP());
             System.out.println("K:"+ k + " r:" + r + " e:"+e);
-        } while(r.compareTo(limit) < 0 || e.compareTo(limit) < 0);
+//        } while(r.compareTo(limit) < 0 || e.compareTo(limit) < 0);
         return new BigIntegerPair(r, e);
     }
 
@@ -144,6 +206,26 @@ public class ElUser {
         public BigIntegerPair(BigInteger first, BigInteger second) {
             this.first = first;
             this.second = second;
+        }
+
+        char[] toCharArray() throws UnsupportedEncodingException {
+            return new String(
+                    concatenateArrays(first.toByteArray(), second.toByteArray()),
+                    "UTF-16"
+            ).toCharArray();
+        }
+
+        public BigIntegerPair(char first, char second) {
+            this.first = new BigInteger(
+                    ByteBuffer.allocate(2)
+                            .putChar(first)
+                            .array()
+            );
+            this.second = new BigInteger(
+                    ByteBuffer.allocate(2)
+                            .putChar(second)
+                            .array()
+            );
         }
 
         byte[] toByteArray() throws IOException {

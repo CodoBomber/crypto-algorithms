@@ -1,5 +1,6 @@
 import crypto.Crypto;
-import rsa.RsaUser;
+import el_gamal.ElSystem;
+import el_gamal.ElUser;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -173,10 +174,11 @@ public class Application {
         }*/
 
 
-        RsaUser user1 = new RsaUser("src/test");
-        RsaUser user2 = new RsaUser("LICENSE");
+        ElSystem elSystem = new ElSystem();
+        ElUser elUser = new ElUser(elSystem, "LICENSE");
+        ElUser elUser2 = new ElUser(elSystem, "src/test");
         try {
-            user1.sendMessageTo(user2);
+            elUser.sendMessageTo(elUser2);
         } catch (IOException e) {
         }
     }
