@@ -33,14 +33,14 @@ public class Crypto implements CryptoAlgorithms {
     public static List<BigInteger> generatePG() {
         BigInteger q, p, g;
         Random random = ThreadLocalRandom.current();
-        int pBitLength = 14, gBitLength = 13;
+        int pBitLength = 18/*14*/, gBitLength = 13/*13*/;
         do {
             q = BigInteger.probablePrime(pBitLength, random);
             p = q.multiply(BigInteger.valueOf(2))
                     .add(BigInteger.ONE);
         } while (!p.isProbablePrime(25));
 
-        BigInteger b = BigInteger.ONE;
+        BigInteger b;
         g = new BigInteger(gBitLength, random);
         for (b = Crypto.modPow(g, q, p);
              b.equals(BigInteger.ONE);

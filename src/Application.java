@@ -175,7 +175,7 @@ public class Application {
 
 
         ElSystem elSystem = new ElSystem();
-        ElUser elUser = new ElUser(elSystem, "LICENSE");
+        ElUser elUser = new ElUser(elSystem, "src/bitcoin.png");
         ElUser elUser2 = new ElUser(elSystem, "src/test");
         try {
             elUser.sendMessageTo(elUser2);
