@@ -1,10 +1,11 @@
 package crypto;
 
-import java.math.BigInteger;
 
-public interface FileCryptoAlgorithm {
+import java.io.IOException;
 
-    BigInteger encryptMessage(BigInteger... bigIntegers);
+public interface FileCryptoAlgorithm<T> {
 
-    BigInteger decryptMessage(BigInteger... bigIntegers);
+    void sendMessageTo(T opponent) throws IOException;
+
+    void receiveMessage(int decodedCapacity) throws IOException;
 }

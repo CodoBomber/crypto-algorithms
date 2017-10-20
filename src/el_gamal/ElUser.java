@@ -64,7 +64,7 @@ public class ElUser {
         opponent.receiveMessage(capacity);
     }
 
-    public void receiveMessage(int decodedCapacity) throws IOException {
+    private void receiveMessage(int decodedCapacity) throws IOException {
         ByteBuffer encodedBuffer = FileEncryptor.bufferizeFile("src/el_gamal_encrypted");
         encodedBuffer.position(0);
         Path decript = Paths.get("src/el_gamal/decripted_file.png");
@@ -101,7 +101,7 @@ public class ElUser {
      * @return <r, e>
      * @throws IllegalStateException 限定はmsgがPを越えないこと
      */
-    public BigIntegerPair encryptMessage(BigInteger msg, BigInteger userPK) throws IllegalStateException {
+    private BigIntegerPair encryptMessage(BigInteger msg, BigInteger userPK) throws IllegalStateException {
         if (msg.compareTo(system.getP()) > 0) {
             throw new IllegalStateException("В метод было передано сообщение: " + msg + " которое больше чем P:" + system.getP());
         }
@@ -119,7 +119,7 @@ public class ElUser {
      * @param re
      * @return
      */
-    public BigInteger decryptMessage(BigIntegerPair re) {
+    private BigInteger decryptMessage(BigIntegerPair re) {
         return re.second
                 .multiply(
                         re.first.modPow(
@@ -140,7 +140,7 @@ public class ElUser {
         private final BigInteger first;
         private final BigInteger second;
 
-        public BigIntegerPair(BigInteger first, BigInteger second) {
+        BigIntegerPair(BigInteger first, BigInteger second) {
             this.first = first;
             this.second = second;
         }

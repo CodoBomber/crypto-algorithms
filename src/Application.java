@@ -1,6 +1,5 @@
 import crypto.Crypto;
-import el_gamal.ElSystem;
-import el_gamal.ElUser;
+import rsa.RsaUser;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -132,11 +131,7 @@ public class Application {
         System.out.println(x3);
         System.out.println(x4);
 */
-/*
-    считывать файл поблочно, где p будет равно макс. колву бит p - bitLength of byte[]  p = 8 = byte
-    проблема с decrypt'om ибо мы не знаем по сколько мы байт шифровали
-    на выходе для каждого блока генерировать в файл новые <r,e> с новым к внутри
- */
+
         /*ElSystem elSystem = new ElSystem();
         ElUser eluser1 = new ElUser(elSystem);
         ElUser eluser2 = new ElUser(elSystem);
@@ -164,22 +159,21 @@ public class Application {
 */
 
 /* ************************************************************************/
-
-        /*ElSystem elSystem = new ElSystem();
-        ElUser elUser = new ElUser(elSystem, "src/test");
-        ElUser elUser2 = new ElUser(elSystem, "LICENSE");
-        try {
-            elUser.sendMessageTo(elUser2);
-        } catch (IOException e) {
-        }*/
-
-
+        /*
         ElSystem elSystem = new ElSystem();
         ElUser elUser = new ElUser(elSystem, "src/bitcoin.png");
         ElUser elUser2 = new ElUser(elSystem, "src/test");
         try {
             elUser.sendMessageTo(elUser2);
         } catch (IOException e) {
+        }*/
+
+        RsaUser user1 = new RsaUser("LICENSE");
+        RsaUser user2 = new RsaUser("");
+        try {
+            user1.sendMessageTo(user2);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
