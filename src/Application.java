@@ -1,9 +1,10 @@
 import crypto.Crypto;
-import rsa.RsaUser;
+import shamir.SUser;
+import shamir.Shamir;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Random;
 
 public class Application {
 
@@ -114,7 +115,9 @@ public class Application {
                 BigInteger.valueOf(701), y);
         bgStep.solve();
         bgStepw.solve();*/
-/*
+
+
+/* *****************************LAB 2*******************************************/
 
         Shamir shamir = new Shamir();
         SUser user = new SUser(shamir);
@@ -130,35 +133,7 @@ public class Application {
         System.out.println(x2);
         System.out.println(x3);
         System.out.println(x4);
-*/
 
-        /*ElSystem elSystem = new ElSystem();
-        ElUser eluser1 = new ElUser(elSystem);
-        ElUser eluser2 = new ElUser(elSystem);
-        BigInteger msg = new BigInteger(20, ThreadLocalRandom.current());
-        System.out.println(msg);
-        List<BigInteger> re = eluser1.encryptMessage(msg, eluser2.getPublicKey());
-        System.out.println(re);
-        System.out.println(eluser2.decryptMessage(re));*/
-/*
-        RsaUser user1 = new RsaUser();
-        RsaUser user2 = new RsaUser();
-        BigInteger msg = new BigInteger(20, ThreadLocalRandom.current());
-        System.out.println(msg);
-        BigInteger encrypted = user1.encryptMessage(msg, user2.getDPublicKey(), user2.getNPublicKey());
-        System.out.println(encrypted);
-        System.out.println(user2.decryptMessage(encrypted));*/
-/*
-        VUser user1 = new VUser();
-        VUser user2 = new VUser();
-        BigInteger msg = new BigInteger(8, ThreadLocalRandom.current());
-        System.out.println(msg);
-        List<BigInteger> msgInfo = user1.encryptMessage(msg);
-        System.out.println(msgInfo);
-        System.out.println(user2.decryptMessage(msgInfo.get(0), msgInfo.get(1)));
-*/
-
-/* ************************************************************************/
         /*
         ElSystem elSystem = new ElSystem();
         ElUser elUser = new ElUser(elSystem, "src/bitcoin.png");
@@ -168,12 +143,21 @@ public class Application {
         } catch (IOException e) {
         }*/
 
-        RsaUser user1 = new RsaUser("LICENSE");
+       /* RsaUser user1 = new RsaUser("src/bitcoin.png");
         RsaUser user2 = new RsaUser("");
         try {
             user1.sendMessageTo(user2);
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
+
+        /*VUser user1 = new VUser("src/hr.jpg");
+        VUser user2 = new VUser("");
+        try {
+            user1.sendMessageTo(user2);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+
     }
 }
