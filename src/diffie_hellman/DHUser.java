@@ -2,9 +2,8 @@ package diffie_hellman;
 
 import java.math.BigInteger;
 
-public interface DHUser {
-
-    int xBitLength = 35;
+public interface
+DHUser {
 
     void onConnect(String sourceUsername, BigInteger connectionKey) throws IllegalAccessException;
 
