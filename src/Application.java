@@ -1,10 +1,10 @@
 import crypto.Crypto;
-import shamir.SUser;
-import shamir.Shamir;
+import signature.el_gamal.ElGamalSignature;
 
+import java.io.IOException;
 import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import java.util.Random;
 
 public class Application {
 
@@ -119,7 +119,7 @@ public class Application {
 
 /* *****************************LAB 2*******************************************/
 
-        Shamir shamir = new Shamir();
+        /*Shamir shamir = new Shamir();
         SUser user = new SUser(shamir);
         SUser user2 = new SUser(shamir);
         BigInteger message = new BigInteger(20, new Random()),
@@ -132,7 +132,7 @@ public class Application {
         System.out.println(x1);
         System.out.println(x2);
         System.out.println(x3);
-        System.out.println(x4);
+        System.out.println(x4);*/
 
         /*
         ElSystem elSystem = new ElSystem();
@@ -159,5 +159,20 @@ public class Application {
             e.printStackTrace();
         }*/
 
+        /* *******************************LAB 3************************************************/
+/*
+        RSASignature signature = new RSASignature("LICENSE");
+        try {
+            System.out.println(signature.isAccessVerified(signature.signFile()));
+        } catch (NoSuchAlgorithmException | IOException e) {
+            e.printStackTrace();
+        }*/
+
+        ElGamalSignature signature = new ElGamalSignature("LICENSE");
+        try {
+            signature.isAccessVerified(signature.signFile());
+        } catch (NoSuchAlgorithmException | IOException e) {
+            e.printStackTrace();
+        }
     }
 }
