@@ -1,9 +1,7 @@
 import crypto.Crypto;
-import signature.el_gamal.ElGamalSignature;
 
-import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 public class Application {
@@ -168,11 +166,15 @@ public class Application {
             e.printStackTrace();
         }*/
 
-        ElGamalSignature signature = new ElGamalSignature("LICENSE");
+        /*ElGamalSignature signature = new ElGamalSignature("LICENSE");
         try {
             System.out.println(signature.isAccessVerified(signature.signFile()));
         } catch (NoSuchAlgorithmException | IOException e) {
             e.printStackTrace();
-        }
+        }*/
+
+//        ГОСТ signature = new ГОСТ("src/test");
+        BigDecimal bd = new BigDecimal("12").divide(new BigDecimal("6"), 3, BigDecimal.ROUND_UP);
+        System.out.println(bd.stripTrailingZeros().scale());
     }
 }
