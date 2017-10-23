@@ -170,7 +170,7 @@ public class Application {
 
         ElGamalSignature signature = new ElGamalSignature("LICENSE");
         try {
-            signature.isAccessVerified(signature.signFile());
+            System.out.println(signature.isAccessVerified(signature.signFile()));
         } catch (NoSuchAlgorithmException | IOException e) {
             e.printStackTrace();
         }

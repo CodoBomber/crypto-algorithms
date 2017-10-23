@@ -61,16 +61,23 @@ public class ElGamalSignature implements FileSignature {
             gcdList = Crypto.gcd(k, subP);
         } while(!gcdList.get(0).equals(ONE));
         r = getG().modPow(k, getP());
+        rsByteBuffer.putInt(r.intValueExact());
         char current;
         while (true) {
             try {
                 current = shaBytesBuffer.getChar();
                 //u=h-xr%(p-1)
-                u = BigInteger.valueOf(current).subtract(privateKey.multiply(r)).mod(subP);
+                u = BigInteger.valueOf(current)
+                        .subtract(privateKey.multiply(r))
+                        .mod(subP);
                 //s=k^-1*u%(p-1)
-                rsByteBuffer.putChar((char) r.intValueExact());
-                rsByteBuffer.putChar((char) Crypto.gcd(subP, k).get(2).multiply(u).mod(subP)
-                        .intValueExact());
+                rsByteBuffer.putInt(
+                        Crypto.gcd(subP, k)
+                                .get(2)
+                                .multiply(u)
+                                .mod(subP)
+                                .intValueExact()
+                );
             } catch (BufferUnderflowException e) {
                 break;
             }
@@ -94,25 +101,25 @@ public class ElGamalSignature implements FileSignature {
         rsByteBuffer.position(0);
         byte[] shaBytes = sha256.digest(m);
         ByteBuffer shaByteBuffer = ByteBuffer.wrap(shaBytes);
-        ByteBuffer outByteBuffer1 = ByteBuffer.allocate(shaBytes.length);
-        ByteBuffer outByteBuffer2 = ByteBuffer.allocate(shaBytes.length);
+        ByteBuffer outByteBuffer1 = ByteBuffer.allocate(rsByteBuffer.limit());
+        ByteBuffer outByteBuffer2 = ByteBuffer.allocate(rsByteBuffer.limit());
         outByteBuffer1.position(0);
         outByteBuffer2.position(0);
-        BigInteger r, s;
+        BigInteger r = BigInteger.valueOf(rsByteBuffer.getInt()), s;
         char h;
         while (true) {
             try {
                 h = shaByteBuffer.getChar();
-                r = BigInteger.valueOf(rsByteBuffer.getChar());
-                s = BigInteger.valueOf(rsByteBuffer.getChar());
-                outByteBuffer1.putChar(
-                        (char) publicKey.pow(r.intValue())
-                                .multiply(r.pow(s.intValue()))
+                s = BigInteger.valueOf(rsByteBuffer.getInt());
+                //( (y^r % p) * (r^s % p)) %p
+                outByteBuffer1.putInt(
+                        publicKey.modPow(r, p)
+                                .multiply(r.modPow(s, p))
+                                .mod(p)
                                 .intValueExact()
                 );
-                outByteBuffer2.putChar(
-                        (char) g.pow(h)
-                                .mod(p)
+                outByteBuffer2.putInt(
+                        g.modPow(BigInteger.valueOf(h), p)
                                 .intValueExact()
                 );
             } catch (BufferUnderflowException e) {
