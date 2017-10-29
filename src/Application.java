@@ -175,9 +175,12 @@ public class Application {
             e.printStackTrace();
         }*/
 
-        ГОСТ signature = new ГОСТ("src/test");
+
+        ГОСТ signature;
         try {
-            System.out.println(signature.isAccessVerified(signature.signFile()));
+            do {
+                signature = new ГОСТ("src/test");
+            } while (!signature.isAccessVerified(signature.signFile()));
         } catch (NoSuchAlgorithmException | IOException e) {
             e.printStackTrace();
         }

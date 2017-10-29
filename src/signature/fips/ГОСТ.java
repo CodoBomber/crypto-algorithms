@@ -32,13 +32,15 @@ public class ГОСТ {
         BigInteger b;
         //p = bq + 1 => b = (p-1)/q, where b is integer
         do {
-            //1024 + 768 = 1024 bit
-            b = new BigInteger(768, random);
-            this.P = b.multiply(Q).add(ONE);
-        } while(privateKey.isProbablePrime(25) && P.testBit(1024));
+            //768 + 256 = 1024 bit
+            do {
+                b = new BigInteger(768, random);
+                this.P = b.multiply(Q).add(ONE);
+            } while(!P.isProbablePrime(25));
+        } while(P.testBit(1024));
         do {
-            BigInteger g = new BigInteger(64, random);
-            this.A = g.modPow(b, P);
+            BigInteger a = new BigInteger(64, random);
+            this.A = a.modPow(b, P);
         } while(A.equals(ONE));
         this.publicKey = A.modPow(privateKey, P);
     }
@@ -49,38 +51,24 @@ public class ГОСТ {
         byte[] m = Files.readAllBytes(baseFile);
         System.out.println(Arrays.toString(m));
         byte[] shaBytes = sha256.digest(m);
-        BigInteger hash = new BigInteger(shaBytes);
+        BigInteger hash = new BigInteger(1, shaBytes);
 //        ByteBuffer shaBytesBuffer = ByteBuffer.wrap(sha256.digest(m));
 //        shaBytesBuffer.position(0);
         ByteBuffer rsByteBuffer;// = ByteBuffer.allocate(shaBytes.length);
-        BigInteger k, r, s;/*
-        int i = 50;
-        // TODO: 17/10/24 Переделать циклы так, чтобы GOTO был общий
-        do {
-            k = new BigInteger(i, random);
-            r = A.modPow(k, P).mod(Q);
-            i = i != 254 ? i + 1 : 50;
-        } while (r.equals(ZERO));*/
-//        rsByteBuffer.putInt(r.intValueExact());
-        char current;
+        BigInteger k, r, s;
         for (int i = 64; true; i++) {
-//            try {
-//                current = shaBytesBuffer.getChar();
-                k = new BigInteger(i % 127, random);
-                r = A.modPow(k, P).mod(Q);
-                s = k.multiply(hash)
-                        .add(privateKey.multiply(r))
-                        .mod(Q);
-                if (!s.equals(ZERO) || !r.equals(ZERO)) {
-                    break;
-                }
-            /*} catch (BufferUnderflowException e) {
+            k = new BigInteger(i % 127, random);
+            r = A.modPow(k, P).mod(Q);
+            s = k.multiply(hash)
+                    .add(privateKey.multiply(r))
+                    .mod(Q);
+            if (!s.equals(ZERO) && !r.equals(ZERO)) {
                 break;
-            }*/
+            }
         }
-        byte[] rBytes = r.toByteArray(), sBytes = s.toByteArray();
+        byte[] rBytes = r.toByteArray(), sBytes = s.toByteArray();/*
         System.out.println("before r bytes: "+ Arrays.toString(rBytes));
-        System.out.println("before s bytes: "+ Arrays.toString(sBytes));
+        System.out.println("before s bytes: "+ Arrays.toString(sBytes));*/
         rsByteBuffer = ByteBuffer.allocate(rBytes.length + sBytes.length);
         rsByteBuffer.put(rBytes);
         rsByteBuffer.put(sBytes);
@@ -117,26 +105,43 @@ public class ГОСТ {
                         mrRange.getFirst() + mrRange.getSecond(),
                         bytes.length
                 )
-        );
+        );/*
         System.out.println("after r: " + Arrays.toString(r.toByteArray()));
-        System.out.println("after s: " + Arrays.toString(s.toByteArray()));
+        System.out.println("after s: " + Arrays.toString(s.toByteArray()));*/
         byte[] shaBytes = sha256.digest(m);
-        BigInteger h = new BigInteger(shaBytes);
+//        System.out.println("m: " + Arrays.toString(m));
+//        System.out.println("h: " + Arrays.toString(shaBytes));
+        BigInteger h = new BigInteger(1, shaBytes);
         assertBounds(r, Q);
         assertBounds(s, Q);
 
-        BigInteger u1 = s.multiply(Crypto.gcd(Q, h).get(2)).mod(Q);
-        BigInteger u2 = r.negate().multiply(Crypto.gcd(Q, h).get(2)).mod(Q);
+        System.out.println("r: " + Arrays.toString(r.toByteArray()));
+        System.out.println("s: " + Arrays.toString(s.toByteArray()));
+        BigInteger invertedHash = Crypto.gcd(Q, h).get(2);
+        System.out.println("iHash: " + Arrays.toString(invertedHash.toByteArray()));
+        System.out.println("P :" + P);
+        System.out.println("A :" + A);
+        BigInteger u1 = s.multiply(invertedHash)
+                .mod(Q);
+        BigInteger u2 = r.negate()
+                .multiply(invertedHash)
+                .mod(Q);
+
+        System.out.println("u1: " + u1);
+        System.out.println("u2: " + u2);
         //a^u1 * y^u2 (% P) % Q
-        BigInteger v = A.modPow(u1, P).multiply(publicKey.modPow(u2, P)).mod(Q);
-        assertEquality(v, r);
+        BigInteger u = A.modPow(u1, P)
+                .multiply(publicKey.modPow(u2, P))
+                .mod(P)
+                .mod(Q);
+        assertEquality(u, r);
         return true;
     }
 
-    private void assertEquality(BigInteger v, BigInteger r) {
-        byte[] vBytes = v.toByteArray(), rBytes = r.toByteArray();
-        System.out.println("v: " + Arrays.toString(vBytes));
-        System.out.println("r: " + Arrays.toString(rBytes));
+    private void assertEquality(BigInteger u, BigInteger r) {
+        byte[] vBytes = u.toByteArray(), rBytes = r.toByteArray();
+        System.out.println("u: " + u/*Arrays.toString(vBytes)*/);
+        System.out.println("r: " + r/*Arrays.toString(rBytes)*/);
         if (!Arrays.equals(vBytes, rBytes)) {
             throw new AssertionError("v и r не равны!");
         }
