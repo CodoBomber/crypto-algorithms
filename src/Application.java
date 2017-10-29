@@ -1,6 +1,9 @@
 import crypto.Crypto;
+import signature.fips.ГОСТ;
 
+import java.io.IOException;
 import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 public class Application {
@@ -172,7 +175,11 @@ public class Application {
             e.printStackTrace();
         }*/
 
-//        ГОСТ signature = new ГОСТ("src/test");
-
+        ГОСТ signature = new ГОСТ("src/test");
+        try {
+            System.out.println(signature.isAccessVerified(signature.signFile()));
+        } catch (NoSuchAlgorithmException | IOException e) {
+            e.printStackTrace();
+        }
     }
 }
