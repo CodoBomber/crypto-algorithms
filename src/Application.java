@@ -1,6 +1,5 @@
 import crypto.Crypto;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -174,7 +173,6 @@ public class Application {
         }*/
 
 //        ГОСТ signature = new ГОСТ("src/test");
-        BigDecimal bd = new BigDecimal("12").divide(new BigDecimal("6"), 3, BigDecimal.ROUND_UP);
-        System.out.println(bd.stripTrailingZeros().scale());
+
     }
 }

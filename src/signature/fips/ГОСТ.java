@@ -3,7 +3,6 @@ package signature.fips;
 import signature.FileSignature;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
@@ -16,6 +15,7 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static java.math.BigInteger.ONE;
 import static java.math.BigInteger.ZERO;
 
 public class ГОСТ implements FileSignature {
@@ -28,19 +28,19 @@ public class ГОСТ implements FileSignature {
 
     public ГОСТ(String baseFile) {
         this.baseFile = baseFile;
-        this.Q = BigInteger.probablePrime(256, random);
-        BigDecimal b;
-        BigDecimal dq = new BigDecimal(Q), dp;
+        this.Q = BigInteger.probablePrime(15, random);
+        BigInteger b;
         //p = bq + 1 => b = (p-1)/q, where b is integer
         do {
-            dp = new BigDecimal(BigInteger.probablePrime(1024, random));
-            b = dp.subtract(BigDecimal.ONE).divide(dq, 2, BigDecimal.ROUND_UP);
-        } while (b.stripTrailingZeros().scale() > 0);
-        this.P = dp.toBigInteger();
+            //15 + 16 = 31 bit
+            b = new BigInteger(16, random);
+            this.P = b.multiply(Q).add(ONE);
+        } while(privateKey.isProbablePrime(25) && P.testBit(31));
         do {
-            this.A = new BigInteger(50, random);
-        } while (!A.modPow(Q, P).equals(BigInteger.ONE));
-        this.privateKey = new BigInteger(100, random);
+            BigInteger g = new BigInteger(8, random);
+            this.A = g.modPow(b, P);
+        } while(A.equals(ONE));
+        this.privateKey = new BigInteger(8, random);
         this.publicKey = A.modPow(privateKey, P);
     }
 
@@ -64,14 +64,14 @@ public class ГОСТ implements FileSignature {
         } while (r.equals(ZERO));
         rsByteBuffer.putInt(r.intValueExact());
         char current;
-        for (i = 50; true; i = i != 254 ? i + 1 : 50) {
+        for (i = 1; true; i++) {
             try {
                 current = shaBytesBuffer.getChar();
-                k = new BigInteger(i, random);
+                k = new BigInteger(i % 15, random);
                 s = k.multiply(BigInteger.valueOf(current))
                         .add(privateKey.multiply(r))
                         .mod(Q);
-                if (s.equals(ZERO)) {
+                if (s.equals(ZERO) || r.equals(ZERO)) {
                     continue;
                 }
                 rsByteBuffer.putInt(s.intValueExact());
@@ -79,7 +79,6 @@ public class ГОСТ implements FileSignature {
                 break;
             }
         }
-
         return 0;
     }
 
