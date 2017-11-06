@@ -1,9 +1,10 @@
 import crypto.Crypto;
-import signature.fips.ГОСТ;
+import poker.PokerPlayer;
+import poker.PokerSystem;
 
-import java.io.IOException;
 import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Application {
@@ -176,13 +177,26 @@ public class Application {
         }*/
 
 
-        ГОСТ signature;
+       /* ГОСТ signature;
         try {
             do {
                 signature = new ГОСТ("src/test");
             } while (!signature.isAccessVerified(signature.signFile()));
         } catch (NoSuchAlgorithmException | IOException e) {
             e.printStackTrace();
-        }
+        }*/
+       /* *******************************LAB 4****************************************************/
+
+       PokerSystem pokerSystem = new PokerSystem();
+       pokerSystem.setPlayers(new ArrayList<>(
+               Arrays.asList(
+                       new PokerPlayer(pokerSystem),
+                       new PokerPlayer(pokerSystem),
+                       new PokerPlayer(pokerSystem),
+                       new PokerPlayer(pokerSystem),
+                       new PokerPlayer(pokerSystem)
+               )
+       ));
+       pokerSystem.startDeskEncoding();
     }
 }
