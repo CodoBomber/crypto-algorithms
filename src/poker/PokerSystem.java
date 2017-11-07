@@ -38,6 +38,7 @@ public class PokerSystem {
                         }
                         )
                 ));
+        System.out.println("Исходная колода\n" + K);
     }
 
     public void startDeskEncoding() {

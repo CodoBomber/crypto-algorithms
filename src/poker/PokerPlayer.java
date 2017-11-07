@@ -49,14 +49,9 @@ public class PokerPlayer implements PokerAction {
                 card1,
                 card2
         ));
-        try{
-
-        } catch(Throwable t)  {
-
-        }
         decodeCards(cards);
         this.ownCards = cards;
-        System.out.println("Карты игрока номер " + id + " : " + Arrays.asList(system.getCard(ownCards.get(0)), system.getCard(ownCards.get(1))));
+        System.out.println("Карты игрока номер " + id + " : " + "\nИндексы: " + cards + "\n" + Arrays.asList(system.getCard(ownCards.get(0)), system.getCard(ownCards.get(1))));
     }
 
     @Override
