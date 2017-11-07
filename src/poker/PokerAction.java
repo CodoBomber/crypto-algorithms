@@ -8,5 +8,6 @@ public interface PokerAction {
 
     void dealCards(int card1, int card2);
 
-    ArrayList<Integer> decodeCards(ArrayList<Integer> twoCards);
+    void decodeCards(ArrayList<Integer> cards);
+
 }

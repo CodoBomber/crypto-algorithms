@@ -51,24 +51,42 @@ public class PokerSystem {
 
     private void startCardDealing() {
         //スタックに入れて二つずつ抜き渡す
-        Stack<Integer> deskStack = new Stack<>();
-        indexes.forEach(deskStack::push);
-        ArrayList<Integer> twoCards = new ArrayList<>();
+        Stack<Integer> deckStack = new Stack<>();
+        indexes.forEach(deckStack::push);
+        ArrayList<Integer> deckCards = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0));
+        ArrayList<Integer> cards = new ArrayList<>();
+        deckCards.set(0, deckStack.pop());
+        deckCards.set(1, deckStack.pop());
+        deckCards.set(2, deckStack.pop());
+        deckCards.set(3, deckStack.pop());
+        deckCards.set(4, deckStack.pop());
         //みんなに渡すループ
         for (int i = 0; i < players.size(); i++) {
             //カード2枚を本人以外みんなにキーを解錠しに渡す
-            System.out.println("Колода в раздаче:\n" + deskStack);
-            twoCards.add(0, deskStack.pop());
-            twoCards.add(1, deskStack.pop());
+            System.out.println("Колода в раздаче:\n" + deckStack);
+            //dealing card
+            cards.add(0, deckStack.pop());
+            cards.add(1, deckStack.pop());
             for (int j = 0; j < players.size(); j++) {
                 if (j == i) {
                     continue;
                 }
-                twoCards = players.get(j).decodeCards(twoCards);
+                players.get(j).decodeCards(cards);
             }
-            players.get(i).dealCards(twoCards.get(0), twoCards.get(1));
+            players.get(i).dealCards(cards.get(0), cards.get(1));
+            //safe junban
+            players.get(i).decodeCards(cards);
+            players.get(i).decodeCards(deckCards);
         }
         //５カード机に置いておくように
+        System.out.println("5 карт на стол!\n" + deckCards);
+        System.out.println(Arrays.asList(
+                K.get(deckCards.get(0)),
+                K.get(deckCards.get(1)),
+                K.get(deckCards.get(2)),
+                K.get(deckCards.get(3)),
+                K.get(deckCards.get(4))
+        ));
     }
 
     public void setPlayers(List<PokerPlayer> players) {
@@ -101,4 +119,5 @@ public class PokerSystem {
     int incrementPlayerCounter() {
         return playersCounter++;
     }
+
 }
