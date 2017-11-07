@@ -18,7 +18,7 @@ public class PokerSystem {
         ThreadLocalRandom random = ThreadLocalRandom.current();
         this.P = BigInteger.probablePrime(20, random);
         this.indexes = new ArrayList<>();
-        for (int i = 0; i < 52; i++) {
+        for (int i = 4; i < 56; i++) {
             indexes.add(i);
         }
         final String[] cardValues = {"two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "jack",
@@ -32,8 +32,8 @@ public class PokerSystem {
                         indexes::get,
                         integer -> {
                             int border = indexes.get(integer) % cardValues.length;
-                            int shift = indexes.get(integer) / 13;
-                            int i = border == 0 && shift < 3 && indexes.get(integer) != 0 ? shift + 1 : shift;
+                            int shift = indexes.get(integer) / 14;
+                            int i = border == 0 && shift < 3 ? shift + 1 : shift;
                             return cardValues[border] + cardLears[i];
                         }
                         )
