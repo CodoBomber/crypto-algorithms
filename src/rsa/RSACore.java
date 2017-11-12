@@ -15,8 +15,8 @@ public class RSACore {
 
     protected BigInteger N;
     private ThreadLocalRandom random;
-    private BigInteger P;
-    private BigInteger Q;
+    protected BigInteger P;
+    protected BigInteger Q;
     private BigInteger f;
     protected BigInteger c, d;
 
