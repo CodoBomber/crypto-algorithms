@@ -1,10 +1,10 @@
 import crypto.Crypto;
-import poker.PokerPlayer;
-import poker.PokerSystem;
+import digital_cache.Bank;
+import digital_cache.Consumer;
+import digital_cache.Shop;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 public class Application {
@@ -187,7 +187,7 @@ public class Application {
         }*/
        /* *******************************LAB 4****************************************************/
 
-       PokerSystem pokerSystem = new PokerSystem();
+       /*PokerSystem pokerSystem = new PokerSystem();
        pokerSystem.setPlayers(new ArrayList<>(
                Arrays.asList(
                        new PokerPlayer(pokerSystem),
@@ -197,6 +197,19 @@ public class Application {
                        new PokerPlayer(pokerSystem)
                )
        ));
-       pokerSystem.startDeskEncoding();
+       pokerSystem.startDeskEncoding();*/
+       /* ********************************LAB 5********************************************************/
+
+        try {
+            Bank bank = new Bank();
+            Consumer consumer = new Consumer(bank, Bank.Cost.MILLION);
+            Shop shop = new Shop(bank);
+            consumer.makePurchaseInShop(shop);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
     }
+
+
 }

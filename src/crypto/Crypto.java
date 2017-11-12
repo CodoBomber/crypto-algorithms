@@ -147,4 +147,8 @@ public class Crypto implements CryptoAlgorithms {
         return result;
     }
 
+    public static BigInteger inverse(BigInteger r, BigInteger mod) {
+        BigInteger inverse = gcd(mod, r).get(2);
+        return inverse.compareTo(ZERO) < 0 ? inverse.add(mod) : inverse;
+    }
 }

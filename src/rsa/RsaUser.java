@@ -1,6 +1,5 @@
 package rsa;
 
-import crypto.Crypto;
 import crypto.FileCryptoAlgorithm;
 import crypto.FileEncryptor;
 
@@ -13,36 +12,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
-import static java.math.BigInteger.ONE;
-import static java.math.BigInteger.ZERO;
+public class RsaUser extends RSACore implements FileCryptoAlgorithm<RsaUser> {
 
-public class RsaUser implements FileCryptoAlgorithm<RsaUser> {
-
-    private final BigInteger N;
     private final String baseFilename;
-    private BigInteger c, d;
 
     public RsaUser(String baseFilename) {
         this.baseFilename = baseFilename;
-        Random random = ThreadLocalRandom.current();
-        BigInteger P = BigInteger.probablePrime(8, random);
-        BigInteger Q = BigInteger.probablePrime(10, random);
-        N = P.multiply(Q);
-        BigInteger f = P.subtract(ONE).multiply(Q.subtract(ONE));
-        List<BigInteger> gcdList;
-        do {
-            c = new BigInteger(8, random);
-            gcdList = Crypto.gcd(c, f);
-        } while(!gcdList.get(0).equals(ONE));
-        d = gcdList.get(1).compareTo(ZERO) > 0 ? gcdList.get(1)
-                : P.subtract(ONE)
-                .multiply(Q.subtract(ONE))
-                .add(gcdList.get(1));
-        System.out.println("N:" + N + " P:" + P + " Q:" + Q + " c:" + c + " d:" + d);
     }
 
     @Override
@@ -119,15 +95,7 @@ public class RsaUser implements FileCryptoAlgorithm<RsaUser> {
     }
 
     private BigInteger decryptMessage(BigInteger msg) {
-        return msg.modPow(this.c, this.N);
-    }
-
-    public BigInteger getNPublicKey() {
-        return N;
-    }
-
-    public BigInteger getDPublicKey() {
-        return d;
+        return msg.modPow(super.c, super.N);
     }
 
 }
