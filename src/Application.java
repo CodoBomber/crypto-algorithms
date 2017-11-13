@@ -1,10 +1,9 @@
 import crypto.Crypto;
-import digital_cache.Bank;
-import digital_cache.Consumer;
-import digital_cache.Shop;
+import graph_painting.GraphPurchaser;
+import graph_painting.Painter;
 
+import java.io.IOException;
 import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 public class Application {
@@ -199,7 +198,7 @@ public class Application {
        ));
        pokerSystem.startDeskEncoding();*/
        /* ********************************LAB 5********************************************************/
-
+/*
         try {
             Bank bank = new Bank();
             Consumer consumer = new Consumer(bank, Bank.Cost.MILLION);
@@ -207,8 +206,16 @@ public class Application {
             consumer.makePurchaseInShop(shop);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-        }
+        }*/
+        /* *******************************LAB 6(RGZ)*****************************************************/
 
+        GraphPurchaser graphPurchaser = new GraphPurchaser();
+        Painter painter = new Painter("src/file2.txt", graphPurchaser);
+        try {
+            painter.paintGraph();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

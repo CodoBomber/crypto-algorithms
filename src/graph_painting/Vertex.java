@@ -7,11 +7,13 @@ import java.math.BigInteger;
 public class Vertex extends RSACore {
 
     private Colors color;
+    private int ordinal;
     private BigInteger r;
     private BigInteger Z;
 
-    Vertex(String color) {
+    Vertex(int ordinal, String color) {
         super(127, 127);
+        this.ordinal = ordinal;
         this.color = Colors.valueOf(color);
     }
 
@@ -31,7 +33,20 @@ public class Vertex extends RSACore {
         Z = z;
     }
 
+    //別々のパッケージーに別けること package-public
+    public BigInteger getC() {
+        return c;
+    }
+
+    public int getOrdinal() {
+        return ordinal;
+    }
+
     public BigInteger getR() {
         return r;
+    }
+
+    public BigInteger getZ() {
+        return Z;
     }
 }
