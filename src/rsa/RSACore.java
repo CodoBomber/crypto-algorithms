@@ -57,6 +57,10 @@ public class RSACore {
         return new Pair<>(c, d);
     }
 
+    public void regeneratePrivateKeys() {
+        generateAdditionalKeys();
+    }
+
     public BigInteger getNPublicKey() {
         return N;
     }

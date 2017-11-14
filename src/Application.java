@@ -198,8 +198,7 @@ public class Application {
        ));
        pokerSystem.startDeskEncoding();*/
        /* ********************************LAB 5********************************************************/
-/*
-        try {
+        /*try {
             Bank bank = new Bank();
             Consumer consumer = new Consumer(bank, Bank.Cost.MILLION);
             Shop shop = new Shop(bank);

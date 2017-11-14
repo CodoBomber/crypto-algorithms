@@ -35,7 +35,9 @@ public class Vertex extends RSACore {
 
     //別々のパッケージーに別けること package-public
     public BigInteger getC() {
-        return c;
+        BigInteger oldC = c;
+        regeneratePrivateKeys();
+        return oldC;
     }
 
     public int getOrdinal() {
