@@ -1,10 +1,9 @@
 import crypto.Crypto;
-import poker.PokerPlayer;
-import poker.PokerSystem;
+import graph_painting.GraphPurchaser;
+import graph_painting.Painter;
 
+import java.io.IOException;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Application {
@@ -187,7 +186,7 @@ public class Application {
         }*/
        /* *******************************LAB 4****************************************************/
 
-       PokerSystem pokerSystem = new PokerSystem();
+       /*PokerSystem pokerSystem = new PokerSystem();
        pokerSystem.setPlayers(new ArrayList<>(
                Arrays.asList(
                        new PokerPlayer(pokerSystem),
@@ -197,6 +196,26 @@ public class Application {
                        new PokerPlayer(pokerSystem)
                )
        ));
-       pokerSystem.startDeskEncoding();
+       pokerSystem.startDeskEncoding();*/
+       /* ********************************LAB 5********************************************************/
+        /*try {
+            Bank bank = new Bank();
+            Consumer consumer = new Consumer(bank, Bank.Cost.MILLION);
+            Shop shop = new Shop(bank);
+            consumer.makePurchaseInShop(shop);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }*/
+        /* *******************************LAB 6(RGZ)*****************************************************/
+
+        GraphPurchaser graphPurchaser = new GraphPurchaser();
+        Painter painter = new Painter("src/file2.txt", graphPurchaser);
+        try {
+            painter.paintGraph();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
+
 }
